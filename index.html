@@ -144,6 +144,10 @@
   .bed .leaf{position:absolute; right:9px; top:9px; font-size:15px; opacity:.9}
   .bed .avgph{position:absolute; right:9px; bottom:9px; font-family:var(--mono); font-size:10.5px; padding:2px 6px; border-radius:6px; background:rgba(255,255,255,.7); font-weight:600}
 
+  .arch-sec{margin-top:18px}
+  .arch-sec:first-of-type{margin-top:4px}
+  .bed-tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:9px; margin-top:9px}
+
   /* legends */
   .legends{display:grid; grid-template-columns:1fr; gap:14px}
   @media(min-width:760px){.legends{grid-template-columns:1fr 1fr}}
@@ -477,117 +481,63 @@
     </button>`;
   }
 
-  /* ---------- HOUSE VIEW — full 300-patch matrix ---------- */
-  const MODES = {crop:"Crop", ph:"Soil pH", moist:"Moisture"};
-  function cellColor(patch, crop, mode){
-    if(mode==="ph") return phColorHex(phClass(patch.ph, crop).key);
-    if(mode==="moist"){ const t=Math.max(0,Math.min(1,(patch.moisture-40)/45)); return mix("#cfe2f0","#2f6d9e",t); }
-    return CROPS[crop].color;
-  }
+  /* ---------- HOUSE VIEW — bed tiles grouped by arch ---------- */
   function renderHouse(){
     const h=houseById(state.houseId);
-    const mode=state.viewMode||"crop";
     const planted=plantedCount(h), total=h.beds.length;
-    const totalPatches=h.beds.length*PATCHES_PER_BED;
+    const totalPatches=total*PATCHES_PER_BED;
     stage.innerHTML=`
       <div class="view">
         <div class="view-head">
           <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches</div>
-          <h2>${h.name} — planting grid</h2>
-          <p class="lede">Every monitored patch in the house, at a glance — 3 arches × 20 beds × 5 patches = ${totalPatches} patches. Each bed is a 1 × 50 m strip (one crop) with 5 monitored 1 × 1 m patches sampled along its length. Click an empty bed to plant it, or any patch to see its last photo and soil readings.</p>
+          <h2>${h.name} — bed plan</h2>
+          <p class="lede">${total} beds across 3 arches — each a 1 × 50 m strip growing one crop, with 5 monitored 1 × 1 m patches (${totalPatches} patches in all). Tap an empty bed to assign a crop, or a planted bed to inspect its patches, pH and last photos.</p>
         </div>
         <div class="house-wrap">
           <div class="plan-card">
             <div class="plan-top">
               <div>
-                <div class="eyebrow" style="color:var(--muted)">Colour patches by</div>
-                <div class="seg" role="tablist" style="margin-top:6px">
-                  ${Object.entries(MODES).map(([k,v])=>`<button role="tab" data-mode="${k}" class="${k===mode?'on':''}" aria-selected="${k===mode}">${v}</button>`).join("")}
-                </div>
+                <div class="eyebrow" style="color:var(--muted)">Planting grid</div>
+                <div style="font-size:13px;color:var(--muted);margin-top:3px">3 arches · 20 beds each · ${total} beds</div>
               </div>
-              <div class="scale-note"><span class="ruler"></span> ${planted}/${total} beds planted · each column = 1 bed</div>
+              <div class="scale-note"><span class="ruler"></span> ${planted}/${total} beds planted · beds run the 50 m length</div>
             </div>
-            <div class="matrix-scroll">
-              <div class="matrix">${h.arches.map(a=>archBlock(h,a,mode)).join("")}</div>
-            </div>
-            <div class="axis-note">
-              <span class="pk">↕ 5 monitored 1 × 1 m patches per bed (P1–P5), spaced down the 50 m length</span>
-              <span class="pk">↔ 20 beds per arch (1 m each = 20 m)</span>
-            </div>
+            ${h.arches.map(a=>archSection(h,a)).join("")}
           </div>
           <div class="legends">
-            <div id="modeLegend">${modeLegendInner(mode)}</div>
             ${cropLegend(h)}
+            ${phLegend()}
           </div>
         </div>
       </div>`;
-    // wire view-mode toggle
-    stage.querySelectorAll(".seg button").forEach(el=>el.onclick=()=>applyMode(el.dataset.mode));
-    // empty beds -> crop picker
-    stage.querySelectorAll(".bedcol.empty").forEach(el=>{
-      const open=()=>openBed(el.dataset.bed);
-      el.onclick=open;
-      el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); open(); } };
-    });
-    // planted patch cells -> patch detail
-    stage.querySelectorAll(".cell[data-p]").forEach(el=>{
-      el.onclick=e=>{ e.stopPropagation(); openCell(el.dataset.bed, +el.dataset.p); };
-    });
+    stage.querySelectorAll(".bed").forEach(el=>el.onclick=()=>openBed(el.dataset.bed));
   }
-  function archBlock(h, arch, mode){
+  function archSection(h, arch){
     const beds=h.beds.filter(b=>b.arch===arch);
     const last=arch+String(BEDS_PER_ARCH).padStart(2,"0");
-    return `<div class="arch">
-      <div class="arch-h">Arch ${arch} <span>${arch}01–${last}</span></div>
-      <div class="arch-cap" aria-hidden="true"></div>
-      <div class="arch-grid">${beds.map(b=>bedColumn(b,mode)).join("")}</div>
+    const plantedA=beds.filter(b=>b.crop).length;
+    return `<div class="arch-sec">
+      <div class="arch-h">Arch ${arch} <span>${arch}01–${last} · ${plantedA}/${beds.length} planted</span></div>
+      <div class="bed-tiles">${beds.map(b=>bedTile(b)).join("")}</div>
     </div>`;
   }
-  function bedColumn(b, mode){
+  function bedTile(b){
     if(!b.crop){
-      const cells=Array.from({length:PATCHES_PER_BED}).map(()=>`<span class="cell empty"></span>`).join("");
-      return `<div class="bedcol empty" data-bed="${b.id}" role="button" tabindex="0" title="Bed ${b.id} · empty — click to plant" aria-label="Bed ${b.id}, empty, click to plant">${cells}</div>`;
+      return `<button class="bed empty" data-bed="${b.id}" aria-label="Bed ${b.id}, empty, click to plant">
+        <span class="id">${b.id}</span>
+        <span class="crop">Empty</span>
+        <span class="sub">Not planted</span>
+        <span class="plantbtn">＋ Pick a plant</span>
+      </button>`;
     }
-    const c=CROPS[b.crop];
-    const cells=b.patches.map(p=>{
-      const pc=phClass(p.ph,b.crop);
-      return `<span class="cell" data-bed="${b.id}" data-p="${p.idx}" tabindex="0" role="button"
-        style="background:${cellColor(p,b.crop,mode)}"
-        title="${p.id} · ${c.name} · pH ${p.ph.toFixed(1)} (${pc.label}) · ${p.moisture}% moisture"
-        aria-label="Patch ${p.id}, ${c.name}, pH ${p.ph.toFixed(1)}, ${p.moisture} percent moisture"></span>`;
-    }).join("");
-    return `<div class="bedcol" data-bed="${b.id}" title="Bed ${b.id} · ${c.name}">${cells}</div>`;
-  }
-  function applyMode(mode){
-    state.viewMode=mode;
-    const h=houseById(state.houseId);
-    document.querySelectorAll(".seg button").forEach(b=>{
-      const on=b.dataset.mode===mode; b.classList.toggle("on",on); b.setAttribute("aria-selected",on);
-    });
-    document.querySelectorAll(".cell[data-p]").forEach(el=>{
-      const b=bedById(h,el.dataset.bed); const p=b.patches[+el.dataset.p];
-      el.style.background=cellColor(p,b.crop,mode);
-    });
-    const ml=document.getElementById("modeLegend");
-    if(ml) ml.innerHTML=modeLegendInner(mode);
-  }
-  function modeLegendInner(mode){
-    if(mode==="ph"){
-      return `<div class="legend"><h4>Soil pH status</h4><div class="chips">
-        <span class="chip"><span class="sw round" style="background:var(--ph-acid)"></span>Acidic — below crop range</span>
-        <span class="chip"><span class="sw round" style="background:var(--ph-ideal)"></span>Ideal — within range</span>
-        <span class="chip"><span class="sw round" style="background:var(--ph-alk)"></span>Alkaline — above range</span>
-      </div></div>`;
-    }
-    if(mode==="moist"){
-      return `<div class="legend"><h4>Soil moisture</h4><div class="chips">
-        <span class="chip"><span class="moist-scale"></span></span>
-        <span class="chip" style="color:var(--muted)">Dry (~40%) → Wet (~85%)</span>
-      </div></div>`;
-    }
-    return `<div class="legend"><h4>Coloured by crop</h4><div class="chips">
-      <span class="chip" style="color:var(--muted)">Each column is one bed (one crop). Switch the toggle to read soil pH or moisture across every patch.</span>
-    </div></div>`;
+    const c=CROPS[b.crop]; const ap=avgPh(b); const pc=phClass(ap,b.crop);
+    return `<button class="bed" data-bed="${b.id}" style="background:linear-gradient(155deg, ${hexA(c.color,.16)}, ${hexA(c.color,.30)}); border-color:${hexA(c.color,.5)}" aria-label="Bed ${b.id}, ${c.name}, average pH ${ap.toFixed(1)}">
+      <span class="id">${b.id}</span>
+      <span class="crop">${c.name}</span>
+      <span class="sub">${b.patches.length} patches · 1×1 m</span>
+      <span class="leaf" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="${c.color}"><path d="M12 21c0-6 3-10 8-11-1 7-4 10-8 11Z"/><path d="M12 21C8 20 5 16 4 9c5 1 8 5 8 12Z" opacity=".65"/></svg></span>
+      <span class="avgph" style="color:${phColorHex(pc.key)}">pH ${ap.toFixed(1)}</span>
+    </button>`;
   }
   function hexA(hex,a){const A=hx(hex);return `rgba(${A[0]},${A[1]},${A[2]},${a})`;}
   function cropLegend(h){
