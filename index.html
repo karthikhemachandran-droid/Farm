@@ -84,15 +84,16 @@
   .ghouse:hover,.ghouse:focus-visible{transform:translateY(-4px); box-shadow:0 14px 34px rgba(26,35,28,.16); outline:none}
   .ghouse:focus-visible{outline:2px solid var(--green); outline-offset:2px}
   .roof{
-    height:104px; position:relative;
-    background:
-      repeating-linear-gradient(90deg, rgba(120,140,120,.32) 0 2px, transparent 2px 15px),
-      repeating-linear-gradient(0deg, rgba(120,140,120,.16) 0 1px, transparent 1px 26px),
-      linear-gradient(180deg,#f3f5f0,#dfe6dc);
-    border-bottom:1px solid var(--sand-dk);
+    height:104px; position:relative; display:flex; gap:5px; padding:12px 14px 0;
+    background:linear-gradient(180deg,#e8efe5,#d7e0d4); border-bottom:1px solid var(--sand-dk); overflow:hidden;
   }
-  .roof::after{content:""; position:absolute; inset:0;
-    background:linear-gradient(105deg, rgba(255,255,255,.5), transparent 55%)}
+  .rarch{flex:1; align-self:stretch; border-radius:46% 46% 3px 3px / 82% 82% 3px 3px;
+    background:
+      repeating-linear-gradient(90deg, rgba(118,138,118,.30) 0 1.5px, transparent 1.5px 9px),
+      linear-gradient(180deg,#f6f8f3,#e0e8dd);
+    border:1px solid rgba(118,138,118,.34); border-bottom:none;}
+  .roof::after{content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(105deg, rgba(255,255,255,.45), transparent 55%)}
   .ghouse .meta{padding:13px 15px 15px}
   .ghouse .meta .r1{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
   .ghouse h3{font-size:16px; font-weight:600}
@@ -152,6 +153,30 @@
   .chip{display:flex; align-items:center; gap:7px; font-size:12.5px}
   .sw{width:13px; height:13px; border-radius:4px; flex:none; border:1px solid rgba(0,0,0,.08)}
   .sw.round{border-radius:50%}
+
+  /* ---- house matrix (300 patches) ---- */
+  .seg{display:inline-flex; background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:3px; gap:2px}
+  .seg button{padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:600; color:var(--muted); transition:.12s}
+  .seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.09)}
+  .seg button:hover:not(.on){color:var(--ink)}
+  .matrix-scroll{overflow-x:auto; padding:4px 0 10px}
+  .matrix{display:flex; gap:26px; min-width:min-content; padding:6px 6px 4px; align-items:flex-start}
+  .arch{display:flex; flex-direction:column; gap:0}
+  .arch-h{font-size:11px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); font-weight:600; display:flex; gap:8px; align-items:baseline; margin-bottom:7px}
+  .arch-h span{font-size:10px; letter-spacing:.03em; color:var(--muted-2); text-transform:none; font-family:var(--mono)}
+  .arch-cap{height:13px; border-radius:60% 60% 0 0 / 100% 100% 0 0;
+    background:linear-gradient(180deg,#eef2ea,#dae3d7); border:1px solid var(--sand-dk); border-bottom:none; margin:0 6px -1px}
+  .arch-grid{display:flex; gap:3px; padding:9px 6px 7px; background:var(--sand); border:1px solid var(--sand-dk); border-radius:0 0 7px 7px}
+  .bedcol{display:flex; flex-direction:column; gap:2px; cursor:pointer; padding:2px; border-radius:4px; transition:background .12s}
+  .bedcol:hover{background:rgba(31,92,61,.12)}
+  .bedcol:focus-visible{outline:2px solid var(--ink); outline-offset:1px}
+  .cell{width:15px; height:15px; border-radius:2px; border:1px solid rgba(0,0,0,.08); transition:transform .1s ease}
+  .cell.empty{background:repeating-linear-gradient(45deg,#eee7d7 0 3px,#e0d8c6 3px 6px)}
+  .cell[data-p]{cursor:pointer}
+  .cell[data-p]:hover,.cell[data-p]:focus-visible{transform:scale(1.45); position:relative; z-index:4; box-shadow:0 3px 9px rgba(0,0,0,.28); outline:none; border-color:rgba(255,255,255,.8)}
+  .axis-note{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:6px; font-size:11.5px; color:var(--muted)}
+  .axis-note .pk{display:flex; gap:5px; align-items:center}
+  .moist-scale{display:inline-block; width:80px; height:11px; border-radius:4px; background:linear-gradient(90deg,#cfe2f0,#2f6d9e); border:1px solid rgba(0,0,0,.1)}
 
   /* ---- drawer ---- */
   .scrim{position:fixed; inset:0; background:rgba(26,35,28,.34); opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:40}
@@ -266,22 +291,25 @@
   }
 
   /* ---------- build the farm (seed data reflects the whiteboard) ---------- */
-  // Row/col grid 1..4 x A..C => 12 beds per house, matching the planning board.
-  const ROWS=[1,2,3,4], COLS=["A","B","C"];
-  const PATCHES_PER_BED = 12;
-  // Per-house seed plantings so the demo opens with realistic, varied state.
-  const SEED_PLAN = {
-    1:{ "1B":"spinach","2A":"okra","2B":"okra","2C":"okra","3A":"spinach","3B":"spinach","3C":"rocca","4B":"okra","4C":"okra" },
-    2:{ "1A":"basil","1B":"basil","1C":"mint","2A":"rocca","2B":"rocca","3A":"spinach","3B":"spinach","4A":"thyme","4B":"mint","4C":"okra" },
-    3:{ "1A":"spinach","2A":"spinach","2B":"spinach","2C":"spinach","3B":"rocca","3C":"rocca","4A":"mint" },
-    4:{ "1A":"okra","1B":"okra","1C":"okra","2B":"basil","3A":"thyme","3B":"thyme","4A":"rocca","4B":"rocca","4C":"spinach" },
-  };
+  // House = 60 x 50 m, three 20 m net-house arches (A/B/C) side by side.
+  // 20 beds per arch (each bed 1 x 50 m) => 60 beds; 5 patches per bed (1 x 10 m) => 300 patches.
+  const ARCHES = ["A","B","C"];
+  const BEDS_PER_ARCH = 20;
+  const PATCHES_PER_BED = 5;
+  const CROP_IDS = Object.keys(CROPS);
 
-  function makeBed(houseId, row, col){
-    const id = row+col;
-    const crop = (SEED_PLAN[houseId]||{})[id] || null;
-    const b = {id, houseId, crop, patches:[]};
-    if(crop) plantBed(b, crop);
+  // Deterministic seed planting so each house opens with varied, realistic state.
+  function seedCropFor(houseId, arch, col){
+    const empty = rng(houseId*7919 + arch.charCodeAt(0)*131 + col*17)();
+    if(empty < 0.26) return null;                    // ~26% of beds left empty
+    const pick = rng(houseId*104729 + arch.charCodeAt(0)*911 + col*7)();
+    return CROP_IDS[Math.floor(pick*CROP_IDS.length)];
+  }
+  function makeBed(houseId, arch, col){
+    const id = arch + String(col).padStart(2,"0");
+    const b = {id, houseId, arch, col, crop:null, patches:[]};
+    const seeded = seedCropFor(houseId, arch, col);
+    if(seeded) plantBed(b, seeded);
     return b;
   }
   function plantBed(bed, cropId){
@@ -289,17 +317,17 @@
     bed.crop = cropId;
     bed.patches = [];
     for(let i=0;i<PATCHES_PER_BED;i++){
-      const seed = bed.houseId*100000 + bed.id.charCodeAt(0)*997 + bed.id.charCodeAt(1)*31 + i;
+      const seed = bed.houseId*1000000 + bed.arch.charCodeAt(0)*10007 + bed.col*61 + i*7 + 3;
       const r = rng(seed);
-      // pH centered in the crop's ideal band with mild drift
       const mid = (c.phLo+c.phHi)/2;
       const ph = +(mid + (r()-0.5)*1.6).toFixed(1);
-      const moisture = Math.round(48 + r()*34);      // %
-      const ec = +(1.2 + r()*1.3).toFixed(2);         // dS/m
-      const soilTemp = +(22 + r()*7).toFixed(1);      // °C
-      const stage = r();                              // growth 0..1
+      const moisture = Math.round(46 + r()*38);       // %
+      const ec = +(1.2 + r()*1.3).toFixed(2);          // dS/m
+      const soilTemp = +(22 + r()*7).toFixed(1);       // °C
+      const stage = r();                               // growth 0..1
       const hoursAgo = Math.floor(1 + r()*30);
-      bed.patches.push({idx:i, id:bed.id+"-P"+String(i+1).padStart(2,"0"), ph, moisture, ec, soilTemp, stage, hoursAgo, seed});
+      // Patch spans 1 x 10 m along the bed's 50 m length (P1 nearest the entrance).
+      bed.patches.push({idx:i, id:bed.id+"-P"+(i+1), ph, moisture, ec, soilTemp, stage, hoursAgo, seed});
     }
   }
   function clearBed(bed){ bed.crop=null; bed.patches=[]; }
@@ -307,9 +335,9 @@
   const HOUSES = [1,2,3,4].map(hid=>({
     id:hid,
     name:"Greenhouse "+hid,
-    type: hid===2 ? "Net House" : "Net House",
-    widthM:20, lengthM:50,
-    beds: ROWS.flatMap(rw=>COLS.map(cl=>makeBed(hid,rw,cl)))
+    type:"Net House",
+    widthM:60, lengthM:50, arches:ARCHES,
+    beds: ARCHES.flatMap(a=>Array.from({length:BEDS_PER_ARCH},(_,i)=>makeBed(hid,a,i+1)))
   }));
 
   /* ---------- derived stats ---------- */
@@ -416,7 +444,7 @@
         <div class="view-head">
           <div class="eyebrow">Farm site · company-owned land</div>
           <h2>Farm overview</h2>
-          <p class="lede">Four net-house greenhouses on a 2×2 block, ringed by date palms with a shared water reservoir. ${totalPlanted} of ${totalBeds} beds are currently planted. Select a greenhouse to plan its beds.</p>
+          <p class="lede">Four net-house greenhouses on a 2×2 block, ringed by date palms with a shared water reservoir. Each house is 60 × 50 m — three 20 m arches, 60 beds, 300 patches. ${totalPlanted} of ${totalBeds} beds are currently planted. Select a greenhouse to plan its beds.</p>
         </div>
         <div class="site">
           <div class="palm-row top">${palms(9)}</div>
@@ -437,10 +465,10 @@
   function ghouseCard(h){
     const planted=plantedCount(h), total=h.beds.length, pct=Math.round(planted/total*100);
     return `<button class="ghouse" data-h="${h.id}" aria-label="${h.name}, ${planted} of ${total} beds planted">
-      <div class="roof"></div>
+      <div class="roof"><span class="rarch"></span><span class="rarch"></span><span class="rarch"></span></div>
       <div class="meta">
-        <div class="r1"><h3>${h.name}</h3><span class="dim">${h.type}</span></div>
-        <div class="dim tnum">${h.widthM} × ${h.lengthM} m</div>
+        <div class="r1"><h3>${h.name}</h3><span class="dim">${h.type} · 3 arches</span></div>
+        <div class="dim tnum">${h.widthM} × ${h.lengthM} m · ${total} beds</div>
         <div class="occ">
           <div class="bar"><i style="width:${pct}%"></i></div>
           <div class="stat"><span><b class="tnum">${planted}</b>/${total} beds planted</span><span><b class="tnum">${cropsInHouse(h)}</b> crops</span></div>
@@ -449,58 +477,117 @@
     </button>`;
   }
 
-  /* ---------- HOUSE VIEW ---------- */
+  /* ---------- HOUSE VIEW — full 300-patch matrix ---------- */
+  const MODES = {crop:"Crop", ph:"Soil pH", moist:"Moisture"};
+  function cellColor(patch, crop, mode){
+    if(mode==="ph") return phColorHex(phClass(patch.ph, crop).key);
+    if(mode==="moist"){ const t=Math.max(0,Math.min(1,(patch.moisture-40)/45)); return mix("#cfe2f0","#2f6d9e",t); }
+    return CROPS[crop].color;
+  }
   function renderHouse(){
     const h=houseById(state.houseId);
+    const mode=state.viewMode||"crop";
+    const planted=plantedCount(h), total=h.beds.length;
+    const totalPatches=h.beds.length*PATCHES_PER_BED;
     stage.innerHTML=`
       <div class="view">
         <div class="view-head">
-          <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · ${h.widthM*h.lengthM} m²</div>
-          <h2>${h.name} — bed plan</h2>
-          <p class="lede">Each bed grows a single crop across its 1 × 1 m patches. Tap an empty bed to assign a crop, or a planted bed to inspect its patches, pH and last photos.</p>
+          <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches</div>
+          <h2>${h.name} — planting grid</h2>
+          <p class="lede">Every 1 × 10 m patch in the house, at a glance — 3 arches × 20 beds, ${totalPatches} patches. Each bed (a 1 × 50 m strip) grows one crop. Click an empty bed to plant it, or any patch to see its last photo and soil readings.</p>
         </div>
         <div class="house-wrap">
           <div class="plan-card">
             <div class="plan-top">
               <div>
-                <div class="eyebrow" style="color:var(--muted)">Planting grid</div>
-                <div style="font-size:13px;color:var(--muted);margin-top:3px">Rows 1–4 · columns A–C · ${h.beds.length} beds</div>
+                <div class="eyebrow" style="color:var(--muted)">Colour patches by</div>
+                <div class="seg" role="tablist" style="margin-top:6px">
+                  ${Object.entries(MODES).map(([k,v])=>`<button role="tab" data-mode="${k}" class="${k===mode?'on':''}" aria-selected="${k===mode}">${v}</button>`).join("")}
+                </div>
               </div>
-              <div class="scale-note"><span class="ruler"></span> 20 m width (bed strips run the 50 m length)</div>
+              <div class="scale-note"><span class="ruler"></span> ${planted}/${total} beds planted · each column = 1 bed</div>
             </div>
-            <div class="bed-scroll">
-              <div class="house-plan">
-                <span class="dim-w">← 20 m →</span><span class="dim-l">← 50 m →</span>
-                ${h.beds.map(b=>bedTile(b)).join("")}
-              </div>
+            <div class="matrix-scroll">
+              <div class="matrix">${h.arches.map(a=>archBlock(h,a,mode)).join("")}</div>
+            </div>
+            <div class="axis-note">
+              <span class="pk">↕ 5 patches per bed (P1–P5), each 1 × 10 m along the 50 m length</span>
+              <span class="pk">↔ 20 beds per arch (1 m each = 20 m)</span>
             </div>
           </div>
           <div class="legends">
+            <div id="modeLegend">${modeLegendInner(mode)}</div>
             ${cropLegend(h)}
-            ${phLegend()}
           </div>
         </div>
       </div>`;
-    stage.querySelectorAll(".bed").forEach(el=>el.onclick=()=>openBed(el.dataset.bed));
+    // wire view-mode toggle
+    stage.querySelectorAll(".seg button").forEach(el=>el.onclick=()=>applyMode(el.dataset.mode));
+    // empty beds -> crop picker
+    stage.querySelectorAll(".bedcol.empty").forEach(el=>{
+      const open=()=>openBed(el.dataset.bed);
+      el.onclick=open;
+      el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); open(); } };
+    });
+    // planted patch cells -> patch detail
+    stage.querySelectorAll(".cell[data-p]").forEach(el=>{
+      el.onclick=e=>{ e.stopPropagation(); openCell(el.dataset.bed, +el.dataset.p); };
+    });
   }
-  function bedTile(b){
+  function archBlock(h, arch, mode){
+    const beds=h.beds.filter(b=>b.arch===arch);
+    const last=arch+String(BEDS_PER_ARCH).padStart(2,"0");
+    return `<div class="arch">
+      <div class="arch-h">Arch ${arch} <span>${arch}01–${last}</span></div>
+      <div class="arch-cap" aria-hidden="true"></div>
+      <div class="arch-grid">${beds.map(b=>bedColumn(b,mode)).join("")}</div>
+    </div>`;
+  }
+  function bedColumn(b, mode){
     if(!b.crop){
-      return `<button class="bed empty" data-bed="${b.id}" aria-label="Bed ${b.id}, empty">
-        <span class="id">${b.id}</span>
-        <span class="crop">Empty</span>
-        <span class="sub">Not planted</span>
-        <span class="plantbtn">＋ Pick a plant</span>
-      </button>`;
+      const cells=Array.from({length:PATCHES_PER_BED}).map(()=>`<span class="cell empty"></span>`).join("");
+      return `<div class="bedcol empty" data-bed="${b.id}" role="button" tabindex="0" title="Bed ${b.id} · empty — click to plant" aria-label="Bed ${b.id}, empty, click to plant">${cells}</div>`;
     }
-    const c=CROPS[b.crop]; const ap=avgPh(b); const pc=phClass(ap,b.crop);
-    const tint = shade(c.color, 60);
-    return `<button class="bed" data-bed="${b.id}" style="background:linear-gradient(155deg, ${hexA(c.color,.16)}, ${hexA(c.color,.30)}); border-color:${hexA(c.color,.5)}" aria-label="Bed ${b.id}, ${c.name}, average pH ${ap.toFixed(1)}">
-      <span class="id">${b.id}</span>
-      <span class="crop">${c.name}</span>
-      <span class="sub">${b.patches.length} patches · 1×1 m</span>
-      <span class="leaf" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="${c.color}"><path d="M12 21c0-6 3-10 8-11-1 7-4 10-8 11Z"/><path d="M12 21C8 20 5 16 4 9c5 1 8 5 8 12Z" opacity=".65"/></svg></span>
-      <span class="avgph" style="color:${phColorHex(pc.key)}">pH ${ap.toFixed(1)}</span>
-    </button>`;
+    const c=CROPS[b.crop];
+    const cells=b.patches.map(p=>{
+      const pc=phClass(p.ph,b.crop);
+      return `<span class="cell" data-bed="${b.id}" data-p="${p.idx}" tabindex="0" role="button"
+        style="background:${cellColor(p,b.crop,mode)}"
+        title="${p.id} · ${c.name} · pH ${p.ph.toFixed(1)} (${pc.label}) · ${p.moisture}% moisture"
+        aria-label="Patch ${p.id}, ${c.name}, pH ${p.ph.toFixed(1)}, ${p.moisture} percent moisture"></span>`;
+    }).join("");
+    return `<div class="bedcol" data-bed="${b.id}" title="Bed ${b.id} · ${c.name}">${cells}</div>`;
+  }
+  function applyMode(mode){
+    state.viewMode=mode;
+    const h=houseById(state.houseId);
+    document.querySelectorAll(".seg button").forEach(b=>{
+      const on=b.dataset.mode===mode; b.classList.toggle("on",on); b.setAttribute("aria-selected",on);
+    });
+    document.querySelectorAll(".cell[data-p]").forEach(el=>{
+      const b=bedById(h,el.dataset.bed); const p=b.patches[+el.dataset.p];
+      el.style.background=cellColor(p,b.crop,mode);
+    });
+    const ml=document.getElementById("modeLegend");
+    if(ml) ml.innerHTML=modeLegendInner(mode);
+  }
+  function modeLegendInner(mode){
+    if(mode==="ph"){
+      return `<div class="legend"><h4>Soil pH status</h4><div class="chips">
+        <span class="chip"><span class="sw round" style="background:var(--ph-acid)"></span>Acidic — below crop range</span>
+        <span class="chip"><span class="sw round" style="background:var(--ph-ideal)"></span>Ideal — within range</span>
+        <span class="chip"><span class="sw round" style="background:var(--ph-alk)"></span>Alkaline — above range</span>
+      </div></div>`;
+    }
+    if(mode==="moist"){
+      return `<div class="legend"><h4>Soil moisture</h4><div class="chips">
+        <span class="chip"><span class="moist-scale"></span></span>
+        <span class="chip" style="color:var(--muted)">Dry (~40%) → Wet (~85%)</span>
+      </div></div>`;
+    }
+    return `<div class="legend"><h4>Coloured by crop</h4><div class="chips">
+      <span class="chip" style="color:var(--muted)">Each column is one bed (one crop). Switch the toggle to read soil pH or moisture across every patch.</span>
+    </div></div>`;
   }
   function hexA(hex,a){const A=hx(hex);return `rgba(${A[0]},${A[1]},${A[2]},${a})`;}
   function cropLegend(h){
@@ -527,6 +614,14 @@
     if(!b.crop) renderPicker(h,b); else renderPatchGrid(h,b);
     openDrawer();
   }
+  // Clicking a patch cell in the matrix opens its bed's grid, then the patch detail.
+  function openCell(bedId, patchIdx){
+    const h=houseById(state.houseId); const b=bedById(h,bedId);
+    state.bedId=bedId;
+    renderPatchGrid(h,b);
+    renderPatchDetail(h,b,b.patches[patchIdx]);
+    openDrawer();
+  }
   function renderPicker(h,b){
     pickSel=null;
     drawer.innerHTML=`
@@ -535,7 +630,7 @@
         <button class="x" aria-label="Close">✕</button>
       </div>
       <div class="drawer-body">
-        <p class="picker-note">One crop is planted across all ${PATCHES_PER_BED} of this bed's 1 × 1 m patches. Choose from the approved seasonal catalog.</p>
+        <p class="picker-note">This bed is a 1 × 50 m strip. One crop is planted across all ${PATCHES_PER_BED} of its 1 × 10 m patches. Choose from the approved seasonal catalog.</p>
         <div class="crop-grid">
           ${Object.entries(CROPS).map(([k,c])=>`
             <button class="crop-opt" data-crop="${k}">
