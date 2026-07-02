@@ -160,20 +160,20 @@
   .seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.09)}
   .seg button:hover:not(.on){color:var(--ink)}
   .matrix-scroll{overflow-x:auto; padding:4px 0 10px}
-  .matrix{display:flex; gap:26px; min-width:min-content; padding:6px 6px 4px; align-items:flex-start}
+  .matrix{display:flex; gap:20px; min-width:min-content; padding:6px 6px 4px; align-items:flex-start}
   .arch{display:flex; flex-direction:column; gap:0}
   .arch-h{font-size:11px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); font-weight:600; display:flex; gap:8px; align-items:baseline; margin-bottom:7px}
   .arch-h span{font-size:10px; letter-spacing:.03em; color:var(--muted-2); text-transform:none; font-family:var(--mono)}
   .arch-cap{height:13px; border-radius:60% 60% 0 0 / 100% 100% 0 0;
     background:linear-gradient(180deg,#eef2ea,#dae3d7); border:1px solid var(--sand-dk); border-bottom:none; margin:0 6px -1px}
-  .arch-grid{display:flex; gap:3px; padding:9px 6px 7px; background:var(--sand); border:1px solid var(--sand-dk); border-radius:0 0 7px 7px}
-  .bedcol{display:flex; flex-direction:column; gap:2px; cursor:pointer; padding:2px; border-radius:4px; transition:background .12s}
-  .bedcol:hover{background:rgba(31,92,61,.12)}
+  .arch-grid{display:flex; gap:2px; padding:8px 5px 6px; background:var(--sand); border:1px solid var(--sand-dk); border-radius:0 0 7px 7px}
+  .bedcol{display:flex; flex-direction:column; gap:1px; cursor:pointer; padding:1px; border-radius:3px; transition:background .12s}
+  .bedcol:hover{background:rgba(31,92,61,.16)}
   .bedcol:focus-visible{outline:2px solid var(--ink); outline-offset:1px}
-  .cell{width:15px; height:15px; border-radius:2px; border:1px solid rgba(0,0,0,.08); transition:transform .1s ease}
-  .cell.empty{background:repeating-linear-gradient(45deg,#eee7d7 0 3px,#e0d8c6 3px 6px)}
+  .cell{width:10px; height:10px; border-radius:1.5px; border:1px solid rgba(0,0,0,.06); transition:transform .1s ease}
+  .cell.empty{background:repeating-linear-gradient(45deg,#eee7d7 0 2px,#e0d8c6 2px 4px)}
   .cell[data-p]{cursor:pointer}
-  .cell[data-p]:hover,.cell[data-p]:focus-visible{transform:scale(1.45); position:relative; z-index:4; box-shadow:0 3px 9px rgba(0,0,0,.28); outline:none; border-color:rgba(255,255,255,.8)}
+  .cell[data-p]:hover,.cell[data-p]:focus-visible{transform:scale(2); position:relative; z-index:4; box-shadow:0 3px 9px rgba(0,0,0,.3); outline:none; border-color:rgba(255,255,255,.85); border-radius:2px}
   .axis-note{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:6px; font-size:11.5px; color:var(--muted)}
   .axis-note .pk{display:flex; gap:5px; align-items:center}
   .moist-scale{display:inline-block; width:80px; height:11px; border-radius:4px; background:linear-gradient(90deg,#cfe2f0,#2f6d9e); border:1px solid rgba(0,0,0,.1)}
@@ -219,7 +219,7 @@
   .kpi .k{font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
   .kpi .v{font-family:var(--mono); font-size:18px; font-weight:600; margin-top:2px}
   .kpi .v small{font-size:11px; color:var(--muted); font-weight:500}
-  .patch-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+  .patch-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(52px,1fr)); gap:7px}
   .patch{position:relative; aspect-ratio:1; border-radius:9px; overflow:hidden; border:1px solid rgba(0,0,0,.1); transition:.15s; padding:0}
   .patch:hover,.patch:focus-visible{transform:scale(1.05); box-shadow:0 6px 16px rgba(26,35,28,.18); outline:none; z-index:2}
   .patch:focus-visible{outline:2px solid var(--ink); outline-offset:1px}
@@ -295,7 +295,7 @@
   // 20 beds per arch (each bed 1 x 50 m) => 60 beds; 5 patches per bed (1 x 10 m) => 300 patches.
   const ARCHES = ["A","B","C"];
   const BEDS_PER_ARCH = 20;
-  const PATCHES_PER_BED = 5;
+  const PATCHES_PER_BED = 50;   // 1x50 m bed of 1x1 m patches
   const CROP_IDS = Object.keys(CROPS);
 
   // Deterministic seed planting so each house opens with varied, realistic state.
@@ -326,8 +326,8 @@
       const soilTemp = +(22 + r()*7).toFixed(1);       // °C
       const stage = r();                               // growth 0..1
       const hoursAgo = Math.floor(1 + r()*30);
-      // Patch spans 1 x 10 m along the bed's 50 m length (P1 nearest the entrance).
-      bed.patches.push({idx:i, id:bed.id+"-P"+(i+1), ph, moisture, ec, soilTemp, stage, hoursAgo, seed});
+      // Patch is 1 x 1 m along the bed's 50 m length (P1 nearest the entrance).
+      bed.patches.push({idx:i, id:bed.id+"-P"+String(i+1).padStart(2,"0"), ph, moisture, ec, soilTemp, stage, hoursAgo, seed});
     }
   }
   function clearBed(bed){ bed.crop=null; bed.patches=[]; }
@@ -494,7 +494,7 @@
         <div class="view-head">
           <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches</div>
           <h2>${h.name} — planting grid</h2>
-          <p class="lede">Every 1 × 10 m patch in the house, at a glance — 3 arches × 20 beds, ${totalPatches} patches. Each bed (a 1 × 50 m strip) grows one crop. Click an empty bed to plant it, or any patch to see its last photo and soil readings.</p>
+          <p class="lede">Every 1 × 1 m patch in the house, at a glance — 3 arches × 20 beds × 50 patches = ${totalPatches.toLocaleString()} patches. Each bed (a 1 × 50 m strip) grows one crop. Click an empty bed to plant it, or any patch to see its last photo and soil readings.</p>
         </div>
         <div class="house-wrap">
           <div class="plan-card">
@@ -511,7 +511,7 @@
               <div class="matrix">${h.arches.map(a=>archBlock(h,a,mode)).join("")}</div>
             </div>
             <div class="axis-note">
-              <span class="pk">↕ 5 patches per bed (P1–P5), each 1 × 10 m along the 50 m length</span>
+              <span class="pk">↕ 50 patches per bed (P1–P50), each 1 × 1 m down the 50 m length</span>
               <span class="pk">↔ 20 beds per arch (1 m each = 20 m)</span>
             </div>
           </div>
@@ -630,7 +630,7 @@
         <button class="x" aria-label="Close">✕</button>
       </div>
       <div class="drawer-body">
-        <p class="picker-note">This bed is a 1 × 50 m strip. One crop is planted across all ${PATCHES_PER_BED} of its 1 × 10 m patches. Choose from the approved seasonal catalog.</p>
+        <p class="picker-note">This bed is a 1 × 50 m strip. One crop is planted across all ${PATCHES_PER_BED} of its 1 × 1 m patches. Choose from the approved seasonal catalog.</p>
         <div class="crop-grid">
           ${Object.entries(CROPS).map(([k,c])=>`
             <button class="crop-opt" data-crop="${k}">
