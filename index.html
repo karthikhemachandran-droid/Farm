@@ -1,0 +1,664 @@
+<title>Farm Planning Grid — Managed Virtual Farming</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --sand:#E9E2D3; --sand-dk:#D9CFBB; --card:#FBFAF6; --line:#DED6C6;
+    --ink:#1A231C; --muted:#6C7568; --muted-2:#8E9587;
+    --green:#1F5C3D; --green-lo:#2E7A50; --green-hi:#E7F0E5;
+    --ph-acid:#C77D3A; --ph-ideal:#4C9A5A; --ph-alk:#7B6FB0; --moist:#3E82B5;
+    --radius:14px; --shadow:0 1px 2px rgba(26,35,28,.06), 0 8px 24px rgba(26,35,28,.06);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;overflow-x:hidden}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--sand);
+    line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{text-wrap:balance; margin:0}
+  button{font:inherit; color:inherit; cursor:pointer; border:none; background:none}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* ---- header ---- */
+  header{
+    position:sticky; top:0; z-index:30;
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    padding:14px clamp(16px,4vw,40px);
+    background:rgba(251,250,246,.86); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:12px}
+  .brand .mark{
+    width:38px; height:38px; border-radius:11px; flex:none;
+    background:linear-gradient(150deg,var(--green),var(--green-lo));
+    display:grid; place-items:center; color:#EAF3E7; box-shadow:var(--shadow);
+  }
+  .brand h1{font-family:var(--serif); font-size:19px; font-weight:600; letter-spacing:.1px}
+  .brand p{margin:0; font-size:11.5px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
+
+  nav.crumb{display:flex; align-items:center; gap:6px; font-size:13.5px; flex-wrap:wrap; margin-left:auto}
+  nav.crumb button{color:var(--muted); padding:4px 8px; border-radius:8px}
+  nav.crumb button:hover{background:var(--sand-dk); color:var(--ink)}
+  nav.crumb .cur{color:var(--ink); font-weight:600}
+  nav.crumb .sep{color:var(--muted-2); font-size:12px}
+
+  main{padding:clamp(18px,4vw,40px); max-width:1180px; margin:0 auto}
+  .view{animation:fade .35s ease}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+  .eyebrow{font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--green-lo); font-weight:600}
+  .lede{color:var(--muted); font-size:14.5px; max-width:62ch; margin:6px 0 0}
+  .view-head{margin-bottom:22px}
+  .view-head h2{font-family:var(--serif); font-size:clamp(23px,3.6vw,32px); font-weight:600; margin-top:5px}
+
+  /* ---- farm / site plan ---- */
+  .site{
+    position:relative; border-radius:var(--radius); overflow:hidden;
+    background:
+      radial-gradient(120px 120px at 12% 88%, rgba(62,130,181,.0), transparent),
+      repeating-linear-gradient(46deg, rgba(0,0,0,.015) 0 22px, transparent 22px 44px),
+      linear-gradient(160deg,#E4D8C0,#D8C8A9);
+    box-shadow:var(--shadow); border:1px solid var(--sand-dk);
+    padding:clamp(26px,5vw,54px);
+  }
+  .palm-row{position:absolute; left:0; right:0; display:flex; justify-content:space-around; pointer-events:none}
+  .palm-row.top{top:9px} .palm-row.bot{bottom:9px}
+  .palm-col{position:absolute; top:0; bottom:0; display:flex; flex-direction:column; justify-content:space-around; pointer-events:none}
+  .palm-col.l{left:9px} .palm-col.r{right:9px}
+  .palm{width:15px; height:15px; border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #6c8f52, #3f5f34 70%);
+    box-shadow:0 0 0 2px rgba(216,200,169,.5); opacity:.9}
+  .houses{
+    position:relative; z-index:2;
+    display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(16px,3vw,30px);
+    max-width:760px; margin:0 auto;
+  }
+  .ghouse{
+    text-align:left; border-radius:12px; overflow:hidden;
+    background:var(--card); border:1px solid var(--sand-dk);
+    box-shadow:var(--shadow); transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .ghouse:hover,.ghouse:focus-visible{transform:translateY(-4px); box-shadow:0 14px 34px rgba(26,35,28,.16); outline:none}
+  .ghouse:focus-visible{outline:2px solid var(--green); outline-offset:2px}
+  .roof{
+    height:104px; position:relative;
+    background:
+      repeating-linear-gradient(90deg, rgba(120,140,120,.32) 0 2px, transparent 2px 15px),
+      repeating-linear-gradient(0deg, rgba(120,140,120,.16) 0 1px, transparent 1px 26px),
+      linear-gradient(180deg,#f3f5f0,#dfe6dc);
+    border-bottom:1px solid var(--sand-dk);
+  }
+  .roof::after{content:""; position:absolute; inset:0;
+    background:linear-gradient(105deg, rgba(255,255,255,.5), transparent 55%)}
+  .ghouse .meta{padding:13px 15px 15px}
+  .ghouse .meta .r1{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+  .ghouse h3{font-size:16px; font-weight:600}
+  .ghouse .dim{font-size:11.5px; color:var(--muted); letter-spacing:.04em}
+  .ghouse .occ{margin-top:10px}
+  .bar{height:7px; border-radius:99px; background:var(--sand-dk); overflow:hidden}
+  .bar > i{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--green-lo),#5ca772)}
+  .ghouse .stat{display:flex; justify-content:space-between; margin-top:7px; font-size:12px; color:var(--muted)}
+  .ghouse .stat b{color:var(--ink); font-weight:600}
+  .tank{position:relative; z-index:2; width:78px; height:52px; margin:26px auto 0;
+    border-radius:6px; border:2px solid #7c8a90;
+    background:linear-gradient(160deg,#5f93b3,#3f6f92); box-shadow:var(--shadow)}
+  .tank span{position:absolute; left:50%; bottom:-19px; transform:translateX(-50%); white-space:nowrap;
+    font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+
+  /* ---- house / bed grid ---- */
+  .house-wrap{display:grid; grid-template-columns:1fr; gap:20px}
+  .plan-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:clamp(16px,3vw,26px)}
+  .plan-top{display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:16px}
+  .scale-note{font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px}
+  .scale-note .ruler{display:inline-block; width:54px; height:8px; border:1px solid var(--muted-2); border-top:none}
+  .bed-scroll{overflow-x:auto; padding-bottom:6px}
+  .house-plan{
+    position:relative; display:grid; gap:9px; min-width:520px;
+    grid-template-columns:repeat(3, 1fr);
+    padding:16px; border-radius:12px;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.02) 0 1px, transparent 1px 30px), var(--sand);
+    border:1px dashed var(--sand-dk);
+  }
+  .dim-w,.dim-l{position:absolute; color:var(--muted-2); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase}
+  .dim-w{top:-15px; left:50%; transform:translateX(-50%)}
+  .dim-l{top:50%; left:-6px; transform:rotate(-90deg) translateX(50%); transform-origin:left}
+  .bed{
+    position:relative; text-align:left; border-radius:9px; min-height:96px;
+    padding:10px 11px; color:var(--ink);
+    border:1px solid rgba(0,0,0,.08); box-shadow:0 1px 1px rgba(0,0,0,.04);
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .bed:hover,.bed:focus-visible{transform:translateY(-3px) scale(1.012); box-shadow:0 10px 22px rgba(26,35,28,.14); outline:none; z-index:2}
+  .bed:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+  .bed .id{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.06em; opacity:.75}
+  .bed .crop{font-size:14.5px; font-weight:600; line-height:1.2}
+  .bed .sub{font-size:11px; opacity:.72}
+  .bed.empty{background:repeating-linear-gradient(45deg, #efeadd 0 7px, #e8e2d3 7px 14px); color:var(--muted)}
+  .bed.empty .crop{font-weight:500}
+  .bed .plantbtn{margin-top:auto; font-size:11px; font-weight:600; color:var(--green); display:flex; align-items:center; gap:4px}
+  .bed .leaf{position:absolute; right:9px; top:9px; font-size:15px; opacity:.9}
+  .bed .avgph{position:absolute; right:9px; bottom:9px; font-family:var(--mono); font-size:10.5px; padding:2px 6px; border-radius:6px; background:rgba(255,255,255,.7); font-weight:600}
+
+  /* legends */
+  .legends{display:grid; grid-template-columns:1fr; gap:14px}
+  @media(min-width:760px){.legends{grid-template-columns:1fr 1fr}}
+  .legend{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px}
+  .legend h4{font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 10px}
+  .chips{display:flex; flex-wrap:wrap; gap:8px 14px}
+  .chip{display:flex; align-items:center; gap:7px; font-size:12.5px}
+  .sw{width:13px; height:13px; border-radius:4px; flex:none; border:1px solid rgba(0,0,0,.08)}
+  .sw.round{border-radius:50%}
+
+  /* ---- drawer ---- */
+  .scrim{position:fixed; inset:0; background:rgba(26,35,28,.34); opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:40}
+  .scrim.on{opacity:1; pointer-events:auto}
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(560px,94vw); z-index:50;
+    background:var(--card); box-shadow:-14px 0 40px rgba(26,35,28,.2);
+    transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.15,1);
+    display:flex; flex-direction:column;
+  }
+  .drawer.on{transform:none}
+  .drawer-head{padding:18px 20px; border-bottom:1px solid var(--line); display:flex; align-items:flex-start; gap:12px}
+  .drawer-head .id{font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.08em}
+  .drawer-head h3{font-family:var(--serif); font-size:21px; font-weight:600; margin-top:3px}
+  .drawer-head .x{margin-left:auto; width:34px; height:34px; border-radius:9px; display:grid; place-items:center; color:var(--muted); flex:none}
+  .drawer-head .x:hover{background:var(--sand-dk); color:var(--ink)}
+  .drawer-body{padding:20px; overflow-y:auto; flex:1}
+
+  /* crop picker */
+  .picker-note{font-size:13px; color:var(--muted); margin:0 0 16px}
+  .crop-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:11px}
+  @media(min-width:460px){.crop-grid{grid-template-columns:repeat(3,1fr)}}
+  .crop-opt{text-align:left; border:1.5px solid var(--line); border-radius:12px; padding:12px; background:#fff; transition:.15s; display:flex; flex-direction:column; gap:6px}
+  .crop-opt:hover{border-color:var(--green-lo); transform:translateY(-2px)}
+  .crop-opt.sel{border-color:var(--green); box-shadow:0 0 0 3px var(--green-hi)}
+  .crop-opt .dot{width:22px; height:22px; border-radius:7px}
+  .crop-opt .nm{font-size:14px; font-weight:600}
+  .crop-opt .lat{font-size:11px; color:var(--muted); font-style:italic}
+  .drawer-foot{padding:16px 20px; border-top:1px solid var(--line); display:flex; gap:10px; align-items:center}
+  .btn{padding:11px 18px; border-radius:10px; font-size:14px; font-weight:600; transition:.15s}
+  .btn.primary{background:var(--green); color:#fff}
+  .btn.primary:hover{background:var(--green-lo)}
+  .btn.primary:disabled{background:var(--sand-dk); color:var(--muted-2); cursor:not-allowed}
+  .btn.ghost{color:var(--muted)} .btn.ghost:hover{color:var(--ink)}
+  .btn.danger{color:#B4462F; margin-right:auto} .btn.danger:hover{background:#faeae6}
+
+  /* patch grid in drawer */
+  .patch-summary{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
+  .kpi{flex:1; min-width:96px; background:var(--sand); border:1px solid var(--line); border-radius:10px; padding:10px 12px}
+  .kpi .k{font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
+  .kpi .v{font-family:var(--mono); font-size:18px; font-weight:600; margin-top:2px}
+  .kpi .v small{font-size:11px; color:var(--muted); font-weight:500}
+  .patch-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+  .patch{position:relative; aspect-ratio:1; border-radius:9px; overflow:hidden; border:1px solid rgba(0,0,0,.1); transition:.15s; padding:0}
+  .patch:hover,.patch:focus-visible{transform:scale(1.05); box-shadow:0 6px 16px rgba(26,35,28,.18); outline:none; z-index:2}
+  .patch:focus-visible{outline:2px solid var(--ink); outline-offset:1px}
+  .patch svg{display:block; width:100%; height:100%}
+  .patch .pid{position:absolute; top:3px; left:4px; font-family:var(--mono); font-size:8.5px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.6)}
+  .patch .ph{position:absolute; bottom:3px; right:3px; font-family:var(--mono); font-size:9px; font-weight:700; color:#fff; padding:1px 4px; border-radius:5px; text-shadow:0 1px 1px rgba(0,0,0,.4)}
+
+  /* patch detail */
+  .pd-photo{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow)}
+  .pd-photo svg{display:block; width:100%; height:auto}
+  .pd-stamp{position:absolute; left:10px; bottom:10px; background:rgba(20,26,20,.66); color:#eaf3e7; font-family:var(--mono); font-size:11px; padding:4px 9px; border-radius:7px; backdrop-filter:blur(3px)}
+  .pd-cam{position:absolute; right:10px; top:10px; background:rgba(20,26,20,.55); color:#eaf3e7; font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:7px}
+  .readouts{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-top:16px}
+  .ro{background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:13px 14px; position:relative}
+  .ro .k{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:6px}
+  .ro .v{font-family:var(--mono); font-size:26px; font-weight:600; margin-top:5px; line-height:1}
+  .ro .v small{font-size:12px; color:var(--muted); font-weight:500; margin-left:2px}
+  .ro .tag{font-size:11px; font-weight:600; margin-top:6px; display:inline-block; padding:2px 8px; border-radius:99px}
+  .dotk{width:9px; height:9px; border-radius:50%}
+  .meter{height:6px; border-radius:99px; background:var(--sand-dk); margin-top:9px; overflow:hidden}
+  .meter > i{display:block; height:100%; border-radius:99px}
+  .updated{font-size:12px; color:var(--muted); margin-top:16px; display:flex; align-items:center; gap:7px}
+  .pulse{width:8px; height:8px; border-radius:50%; background:var(--ph-ideal); box-shadow:0 0 0 0 rgba(76,154,90,.5); animation:pulse 2.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(76,154,90,.5)}70%{box-shadow:0 0 0 7px rgba(76,154,90,0)}100%{box-shadow:0 0 0 0 rgba(76,154,90,0)}}
+  .backlink{font-size:13px; color:var(--green); font-weight:600; margin-bottom:14px; display:inline-flex; gap:5px; align-items:center}
+  .toast{position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px); background:var(--ink); color:#eaf3e7; padding:12px 20px; border-radius:11px; font-size:14px; font-weight:500; opacity:0; pointer-events:none; transition:.3s; z-index:60; box-shadow:var(--shadow)}
+  .toast.on{opacity:1; transform:translate(-50%,0)}
+</style>
+
+<header>
+  <div class="brand">
+    <div class="mark" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 3-10 8-11-1 7-4 10-8 11Z" fill="currentColor"/><path d="M12 21C8 20 5 16 4 9c5 1 8 5 8 12Z" fill="currentColor" opacity=".7"/><path d="M12 21v-9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <h1>Al Barari Managed Farm</h1>
+      <p>Planting planner</p>
+    </div>
+  </div>
+  <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
+</header>
+
+<main id="stage"></main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawer-title"></aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+  const TODAY = "2026-07-02";
+
+  /* ---------- crop catalog ---------- */
+  const CROPS = {
+    spinach:{name:"Spinach", latin:"Spinacia oleracea", color:"#3E7C47", phLo:6.0, phHi:7.0},
+    rocca:  {name:"Rocca (Arugula)", latin:"Eruca sativa", color:"#7BB04A", phLo:6.0, phHi:7.5},
+    mint:   {name:"Mint", latin:"Mentha spicata", color:"#2E9E7B", phLo:6.0, phHi:7.0},
+    okra:   {name:"Okra", latin:"Abelmoschus esculentus", color:"#B08A2E", phLo:6.5, phHi:7.5},
+    basil:  {name:"Basil", latin:"Ocimum basilicum", color:"#4E9B3A", phLo:6.0, phHi:7.0},
+    thyme:  {name:"Thyme", latin:"Thymus vulgaris", color:"#7E9A5E", phLo:6.0, phHi:8.0},
+  };
+  const EMPTY_COLOR = "#CFC6B5";
+
+  /* ---------- deterministic pseudo-random ---------- */
+  function rng(seed){
+    let x = (seed*2654435761 % 2147483647) || 1;
+    return ()=> (x = x*48271 % 2147483647) / 2147483647;
+  }
+
+  /* ---------- build the farm (seed data reflects the whiteboard) ---------- */
+  // Row/col grid 1..4 x A..C => 12 beds per house, matching the planning board.
+  const ROWS=[1,2,3,4], COLS=["A","B","C"];
+  const PATCHES_PER_BED = 12;
+  // Per-house seed plantings so the demo opens with realistic, varied state.
+  const SEED_PLAN = {
+    1:{ "1B":"spinach","2A":"okra","2B":"okra","2C":"okra","3A":"spinach","3B":"spinach","3C":"rocca","4B":"okra","4C":"okra" },
+    2:{ "1A":"basil","1B":"basil","1C":"mint","2A":"rocca","2B":"rocca","3A":"spinach","3B":"spinach","4A":"thyme","4B":"mint","4C":"okra" },
+    3:{ "1A":"spinach","2A":"spinach","2B":"spinach","2C":"spinach","3B":"rocca","3C":"rocca","4A":"mint" },
+    4:{ "1A":"okra","1B":"okra","1C":"okra","2B":"basil","3A":"thyme","3B":"thyme","4A":"rocca","4B":"rocca","4C":"spinach" },
+  };
+
+  function makeBed(houseId, row, col){
+    const id = row+col;
+    const crop = (SEED_PLAN[houseId]||{})[id] || null;
+    const b = {id, houseId, crop, patches:[]};
+    if(crop) plantBed(b, crop);
+    return b;
+  }
+  function plantBed(bed, cropId){
+    const c = CROPS[cropId];
+    bed.crop = cropId;
+    bed.patches = [];
+    for(let i=0;i<PATCHES_PER_BED;i++){
+      const seed = bed.houseId*100000 + bed.id.charCodeAt(0)*997 + bed.id.charCodeAt(1)*31 + i;
+      const r = rng(seed);
+      // pH centered in the crop's ideal band with mild drift
+      const mid = (c.phLo+c.phHi)/2;
+      const ph = +(mid + (r()-0.5)*1.6).toFixed(1);
+      const moisture = Math.round(48 + r()*34);      // %
+      const ec = +(1.2 + r()*1.3).toFixed(2);         // dS/m
+      const soilTemp = +(22 + r()*7).toFixed(1);      // °C
+      const stage = r();                              // growth 0..1
+      const hoursAgo = Math.floor(1 + r()*30);
+      bed.patches.push({idx:i, id:bed.id+"-P"+String(i+1).padStart(2,"0"), ph, moisture, ec, soilTemp, stage, hoursAgo, seed});
+    }
+  }
+  function clearBed(bed){ bed.crop=null; bed.patches=[]; }
+
+  const HOUSES = [1,2,3,4].map(hid=>({
+    id:hid,
+    name:"Greenhouse "+hid,
+    type: hid===2 ? "Net House" : "Net House",
+    widthM:20, lengthM:50,
+    beds: ROWS.flatMap(rw=>COLS.map(cl=>makeBed(hid,rw,cl)))
+  }));
+
+  /* ---------- derived stats ---------- */
+  const bedsOf = h => h.beds;
+  const plantedCount = h => h.beds.filter(b=>b.crop).length;
+  const cropsInHouse = h => new Set(h.beds.filter(b=>b.crop).map(b=>b.crop)).size;
+  const avgPh = bed => bed.patches.length ? (bed.patches.reduce((s,p)=>s+p.ph,0)/bed.patches.length) : null;
+
+  /* ---------- pH classification ---------- */
+  function phClass(ph, crop){
+    const c = CROPS[crop];
+    if(c && ph < c.phLo) return {label:"Acidic", color:"var(--ph-acid)", key:"acid"};
+    if(c && ph > c.phHi) return {label:"Alkaline", color:"var(--ph-alk)", key:"alk"};
+    if(!c){ if(ph<6) return {label:"Acidic",color:"var(--ph-acid)",key:"acid"}; if(ph>7.2) return {label:"Alkaline",color:"var(--ph-alk)",key:"alk"}; }
+    return {label:"Ideal", color:"var(--ph-ideal)", key:"ideal"};
+  }
+  const phColorHex = k => k==="acid"?"#C77D3A":k==="alk"?"#7B6FB0":"#4C9A5A";
+
+  /* ---------- SVG "photo" of a patch (top-down) ---------- */
+  function patchPhoto(patch, cropId, w, h){
+    const c = CROPS[cropId]; const r = rng(patch.seed+7);
+    w=w||100; h=h||100;
+    // soil tone shifts a touch with moisture (wetter = darker)
+    const wet = patch.moisture/100;
+    const soilA = mix("#8a6b45","#5f4527", wet);
+    const soilB = mix("#6f5433","#4a3620", wet);
+    const nPlants = patch.stage<0.34?3 : patch.stage<0.67?5 : 8;
+    const baseR = (patch.stage<0.34?7 : patch.stage<0.67?10 : 13);
+    let plants="";
+    for(let i=0;i<nPlants;i++){
+      const cx = 14 + r()*(w-28), cy = 14 + r()*(h-28);
+      const rad = baseR*(0.7+r()*0.6);
+      const leaf = c.color;
+      const dk = shade(leaf,-26), lt = shade(leaf,22);
+      // rosette: a few overlapping ellipses
+      let rosette="";
+      const blades = 5 + Math.floor(r()*4);
+      for(let b=0;b<blades;b++){
+        const ang = (b/blades)*Math.PI*2 + r()*0.5;
+        const ex = cx + Math.cos(ang)*rad*0.5, ey = cy + Math.sin(ang)*rad*0.5;
+        rosette += `<ellipse cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" rx="${(rad*0.62).toFixed(1)}" ry="${(rad*0.32).toFixed(1)}" fill="${b%2?leaf:dk}" transform="rotate(${(ang*57.3).toFixed(0)} ${ex.toFixed(1)} ${ey.toFixed(1)})" opacity="0.92"/>`;
+      }
+      rosette += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(rad*0.3).toFixed(1)}" fill="${lt}"/>`;
+      plants += `<g>${rosette}</g>`;
+    }
+    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Top-down photo of patch ${patch.id}">
+      <defs><radialGradient id="s${patch.seed}" cx="45%" cy="40%" r="75%">
+        <stop offset="0%" stop-color="${soilA}"/><stop offset="100%" stop-color="${soilB}"/>
+      </radialGradient></defs>
+      <rect width="${w}" height="${h}" fill="url(#s${patch.seed})"/>
+      <g opacity="0.14">${speckles(r,w,h)}</g>
+      ${plants}
+      <rect width="${w}" height="${h}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+    </svg>`;
+  }
+  function speckles(r,w,h){let s="";for(let i=0;i<26;i++){s+=`<circle cx="${(r()*w).toFixed(0)}" cy="${(r()*h).toFixed(0)}" r="${(r()*1.6).toFixed(1)}" fill="#2c1f12"/>`;}return s;}
+  function mix(a,b,t){const A=hx(a),B=hx(b);return rgb(A.map((v,i)=>Math.round(v+(B[i]-v)*t)));}
+  function shade(hex,amt){const A=hx(hex);return rgb(A.map(v=>Math.max(0,Math.min(255,v+amt))));}
+  function hx(h){h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.substr(i,2),16));}
+  function rgb(a){return '#'+a.map(v=>v.toString(16).padStart(2,'0')).join('');}
+
+  /* ---------- state + navigation ---------- */
+  let state = {level:"farm", houseId:null, bedId:null};
+  const stage = document.getElementById("stage");
+  const crumb = document.getElementById("crumb");
+  const drawer = document.getElementById("drawer");
+  const scrim = document.getElementById("scrim");
+  const toastEl = document.getElementById("toast");
+  let toastT=null;
+
+  function toast(msg){
+    toastEl.textContent=msg; toastEl.classList.add("on");
+    clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove("on"),2600);
+  }
+  const houseById = id => HOUSES.find(h=>h.id===id);
+  const bedById = (h,id)=> h.beds.find(b=>b.id===id);
+
+  function go(level, houseId, bedId){
+    state={level, houseId:houseId??state.houseId, bedId:bedId??null};
+    if(level==="farm"){state.houseId=null; state.bedId=null;}
+    render();
+  }
+
+  /* ---------- breadcrumb ---------- */
+  function renderCrumb(){
+    let html = `<button ${state.level==="farm"?'class="cur"':''} data-nav="farm">Farm</button>`;
+    if(state.houseId){
+      const h=houseById(state.houseId);
+      html += `<span class="sep">›</span><button ${state.level==="house"?'class="cur"':''} data-nav="house">${h.name}</button>`;
+    }
+    crumb.innerHTML = html;
+    crumb.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+      closeDrawer();
+      go(b.dataset.nav==="farm"?"farm":"house", state.houseId);
+    });
+  }
+
+  /* ---------- FARM VIEW ---------- */
+  function renderFarm(){
+    const totalBeds = HOUSES.reduce((s,h)=>s+h.beds.length,0);
+    const totalPlanted = HOUSES.reduce((s,h)=>s+plantedCount(h),0);
+    stage.innerHTML = `
+      <div class="view">
+        <div class="view-head">
+          <div class="eyebrow">Farm site · company-owned land</div>
+          <h2>Farm overview</h2>
+          <p class="lede">Four net-house greenhouses on a 2×2 block, ringed by date palms with a shared water reservoir. ${totalPlanted} of ${totalBeds} beds are currently planted. Select a greenhouse to plan its beds.</p>
+        </div>
+        <div class="site">
+          <div class="palm-row top">${palms(9)}</div>
+          <div class="palm-row bot">${palms(9)}</div>
+          <div class="palm-col l">${palms(5)}</div>
+          <div class="palm-col r">${palms(5)}</div>
+          <div class="houses">
+            ${HOUSES.map(h=>ghouseCard(h)).join("")}
+          </div>
+          <div class="tank"><span>Water reservoir</span></div>
+        </div>
+      </div>`;
+    stage.querySelectorAll(".ghouse").forEach(el=>{
+      el.onclick=()=>go("house", +el.dataset.h);
+    });
+  }
+  function palms(n){let s="";for(let i=0;i<n;i++)s+='<span class="palm"></span>';return s;}
+  function ghouseCard(h){
+    const planted=plantedCount(h), total=h.beds.length, pct=Math.round(planted/total*100);
+    return `<button class="ghouse" data-h="${h.id}" aria-label="${h.name}, ${planted} of ${total} beds planted">
+      <div class="roof"></div>
+      <div class="meta">
+        <div class="r1"><h3>${h.name}</h3><span class="dim">${h.type}</span></div>
+        <div class="dim tnum">${h.widthM} × ${h.lengthM} m</div>
+        <div class="occ">
+          <div class="bar"><i style="width:${pct}%"></i></div>
+          <div class="stat"><span><b class="tnum">${planted}</b>/${total} beds planted</span><span><b class="tnum">${cropsInHouse(h)}</b> crops</span></div>
+        </div>
+      </div>
+    </button>`;
+  }
+
+  /* ---------- HOUSE VIEW ---------- */
+  function renderHouse(){
+    const h=houseById(state.houseId);
+    stage.innerHTML=`
+      <div class="view">
+        <div class="view-head">
+          <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · ${h.widthM*h.lengthM} m²</div>
+          <h2>${h.name} — bed plan</h2>
+          <p class="lede">Each bed grows a single crop across its 1 × 1 m patches. Tap an empty bed to assign a crop, or a planted bed to inspect its patches, pH and last photos.</p>
+        </div>
+        <div class="house-wrap">
+          <div class="plan-card">
+            <div class="plan-top">
+              <div>
+                <div class="eyebrow" style="color:var(--muted)">Planting grid</div>
+                <div style="font-size:13px;color:var(--muted);margin-top:3px">Rows 1–4 · columns A–C · ${h.beds.length} beds</div>
+              </div>
+              <div class="scale-note"><span class="ruler"></span> 20 m width (bed strips run the 50 m length)</div>
+            </div>
+            <div class="bed-scroll">
+              <div class="house-plan">
+                <span class="dim-w">← 20 m →</span><span class="dim-l">← 50 m →</span>
+                ${h.beds.map(b=>bedTile(b)).join("")}
+              </div>
+            </div>
+          </div>
+          <div class="legends">
+            ${cropLegend(h)}
+            ${phLegend()}
+          </div>
+        </div>
+      </div>`;
+    stage.querySelectorAll(".bed").forEach(el=>el.onclick=()=>openBed(el.dataset.bed));
+  }
+  function bedTile(b){
+    if(!b.crop){
+      return `<button class="bed empty" data-bed="${b.id}" aria-label="Bed ${b.id}, empty">
+        <span class="id">${b.id}</span>
+        <span class="crop">Empty</span>
+        <span class="sub">Not planted</span>
+        <span class="plantbtn">＋ Pick a plant</span>
+      </button>`;
+    }
+    const c=CROPS[b.crop]; const ap=avgPh(b); const pc=phClass(ap,b.crop);
+    const tint = shade(c.color, 60);
+    return `<button class="bed" data-bed="${b.id}" style="background:linear-gradient(155deg, ${hexA(c.color,.16)}, ${hexA(c.color,.30)}); border-color:${hexA(c.color,.5)}" aria-label="Bed ${b.id}, ${c.name}, average pH ${ap.toFixed(1)}">
+      <span class="id">${b.id}</span>
+      <span class="crop">${c.name}</span>
+      <span class="sub">${b.patches.length} patches · 1×1 m</span>
+      <span class="leaf" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="${c.color}"><path d="M12 21c0-6 3-10 8-11-1 7-4 10-8 11Z"/><path d="M12 21C8 20 5 16 4 9c5 1 8 5 8 12Z" opacity=".65"/></svg></span>
+      <span class="avgph" style="color:${phColorHex(pc.key)}">pH ${ap.toFixed(1)}</span>
+    </button>`;
+  }
+  function hexA(hex,a){const A=hx(hex);return `rgba(${A[0]},${A[1]},${A[2]},${a})`;}
+  function cropLegend(h){
+    const used=[...new Set(h.beds.filter(b=>b.crop).map(b=>b.crop))];
+    const chips = Object.keys(CROPS).map(k=>{
+      const on=used.includes(k);
+      return `<span class="chip" style="opacity:${on?1:.4}"><span class="sw" style="background:${CROPS[k].color}"></span>${CROPS[k].name}</span>`;
+    }).join("");
+    return `<div class="legend"><h4>Crops</h4><div class="chips">${chips}<span class="chip" style="opacity:.7"><span class="sw" style="background:repeating-linear-gradient(45deg,#efeadd 0 4px,#e8e2d3 4px 8px)"></span>Empty bed</span></div></div>`;
+  }
+  function phLegend(){
+    return `<div class="legend"><h4>Soil pH status</h4><div class="chips">
+      <span class="chip"><span class="sw round" style="background:var(--ph-acid)"></span>Acidic — below crop range</span>
+      <span class="chip"><span class="sw round" style="background:var(--ph-ideal)"></span>Ideal — within range</span>
+      <span class="chip"><span class="sw round" style="background:var(--ph-alk)"></span>Alkaline — above range</span>
+    </div></div>`;
+  }
+
+  /* ---------- DRAWER: bed (picker or patch grid) ---------- */
+  let pickSel=null;
+  function openBed(bedId){
+    const h=houseById(state.houseId); const b=bedById(h,bedId);
+    state.bedId=bedId;
+    if(!b.crop) renderPicker(h,b); else renderPatchGrid(h,b);
+    openDrawer();
+  }
+  function renderPicker(h,b){
+    pickSel=null;
+    drawer.innerHTML=`
+      <div class="drawer-head">
+        <div><div class="id">${h.name} · Bed ${b.id}</div><h3 id="drawer-title">Pick a plant</h3></div>
+        <button class="x" aria-label="Close">✕</button>
+      </div>
+      <div class="drawer-body">
+        <p class="picker-note">One crop is planted across all ${PATCHES_PER_BED} of this bed's 1 × 1 m patches. Choose from the approved seasonal catalog.</p>
+        <div class="crop-grid">
+          ${Object.entries(CROPS).map(([k,c])=>`
+            <button class="crop-opt" data-crop="${k}">
+              <span class="dot" style="background:${c.color}"></span>
+              <span class="nm">${c.name}</span>
+              <span class="lat">${c.latin}</span>
+              <span class="lat" style="font-style:normal;color:var(--muted)">Ideal pH ${c.phLo}–${c.phHi}</span>
+            </button>`).join("")}
+        </div>
+      </div>
+      <div class="drawer-foot">
+        <button class="btn ghost" data-close>Cancel</button>
+        <button class="btn primary" id="confirmPlant" disabled>Plant bed</button>
+      </div>`;
+    wireDrawerClose();
+    drawer.querySelectorAll(".crop-opt").forEach(el=>el.onclick=()=>{
+      pickSel=el.dataset.crop;
+      drawer.querySelectorAll(".crop-opt").forEach(x=>x.classList.toggle("sel",x===el));
+      drawer.querySelector("#confirmPlant").disabled=false;
+    });
+    drawer.querySelector("#confirmPlant").onclick=()=>{
+      if(!pickSel) return;
+      plantBed(b,pickSel);
+      toast(`Bed ${b.id} planted with ${CROPS[pickSel].name}`);
+      renderPatchGrid(h,b);
+      renderHouse(); renderCrumb();
+    };
+  }
+  function renderPatchGrid(h,b){
+    const c=CROPS[b.crop]; const ap=avgPh(b);
+    const avgMoist=Math.round(b.patches.reduce((s,p)=>s+p.moisture,0)/b.patches.length);
+    const alerts=b.patches.filter(p=>phClass(p.ph,b.crop).key!=="ideal").length;
+    drawer.innerHTML=`
+      <div class="drawer-head">
+        <div><div class="id">${h.name} · Bed ${b.id}</div>
+          <h3 id="drawer-title"><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:${c.color};margin-right:7px;vertical-align:middle"></span>${c.name}</h3></div>
+        <button class="x" aria-label="Close">✕</button>
+      </div>
+      <div class="drawer-body" id="dbody">
+        <div class="patch-summary">
+          <div class="kpi"><div class="k">Avg pH</div><div class="v" style="color:${phColorHex(phClass(ap,b.crop).key)}">${ap.toFixed(1)}</div></div>
+          <div class="kpi"><div class="k">Avg moisture</div><div class="v">${avgMoist}<small>%</small></div></div>
+          <div class="kpi"><div class="k">Patches</div><div class="v">${b.patches.length}</div></div>
+          <div class="kpi"><div class="k">pH alerts</div><div class="v" style="color:${alerts?'#C77D3A':'#4C9A5A'}">${alerts}</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:9px">Tap a patch for its last photo and live soil readings.</div>
+        <div class="patch-grid">
+          ${b.patches.map(p=>{
+            const pc=phClass(p.ph,b.crop);
+            return `<button class="patch" data-p="${p.idx}" aria-label="Patch ${p.id}, pH ${p.ph}">
+              ${patchPhoto(p,b.crop,100,100)}
+              <span class="pid">${p.id.split("-")[1]}</span>
+              <span class="ph" style="background:${phColorHex(pc.key)}">${p.ph.toFixed(1)}</span>
+            </button>`;
+          }).join("")}
+        </div>
+      </div>
+      <div class="drawer-foot">
+        <button class="btn danger" id="clearBed">Clear bed</button>
+        <button class="btn ghost" id="changeCrop">Change crop</button>
+        <button class="btn primary" data-close>Done</button>
+      </div>`;
+    wireDrawerClose();
+    drawer.querySelectorAll(".patch").forEach(el=>el.onclick=()=>renderPatchDetail(h,b,b.patches[+el.dataset.p]));
+    drawer.querySelector("#changeCrop").onclick=()=>renderPicker(h,b);
+    drawer.querySelector("#clearBed").onclick=()=>{
+      clearBed(b); toast(`Bed ${b.id} cleared`);
+      renderHouse(); renderCrumb(); closeDrawer();
+    };
+  }
+  function renderPatchDetail(h,b,p){
+    const c=CROPS[b.crop]; const pc=phClass(p.ph,b.crop);
+    const moistState = p.moisture<45?{t:"Low",col:"#C77D3A"}:p.moisture>78?{t:"High",col:"#3E82B5"}:{t:"Good",col:"#4C9A5A"};
+    const when = p.hoursAgo<24 ? `Today, ${String(23-p.hoursAgo%12).padStart(2,'0')}:${String((p.seed%60)).padStart(2,'0')}` : `Yesterday, ${String(6+p.hoursAgo%10).padStart(2,'0')}:${String((p.seed%60)).padStart(2,'0')}`;
+    const body=drawer.querySelector("#dbody") || drawer.querySelector(".drawer-body");
+    body.innerHTML=`
+      <button class="backlink" id="backGrid">‹ All patches in Bed ${b.id}</button>
+      <div class="pd-photo">
+        ${patchPhoto(p,b.crop,420,300)}
+        <span class="pd-cam">Fixed patch camera</span>
+        <span class="pd-stamp">${p.id} · ${when}</span>
+      </div>
+      <div class="readouts">
+        <div class="ro">
+          <div class="k"><span class="dotk" style="background:${phColorHex(pc.key)}"></span>Soil pH</div>
+          <div class="v" style="color:${phColorHex(pc.key)}">${p.ph.toFixed(1)}</div>
+          <div class="tag" style="background:${hexA(phColorHex(pc.key),.15)};color:${phColorHex(pc.key)}">${pc.label} · ideal ${c.phLo}–${c.phHi}</div>
+        </div>
+        <div class="ro">
+          <div class="k"><span class="dotk" style="background:${moistState.col}"></span>Moisture</div>
+          <div class="v">${p.moisture}<small>%</small></div>
+          <div class="meter"><i style="width:${p.moisture}%;background:${moistState.col}"></i></div>
+        </div>
+        <div class="ro">
+          <div class="k">EC · nutrients</div>
+          <div class="v">${p.ec.toFixed(2)}<small>dS/m</small></div>
+        </div>
+        <div class="ro">
+          <div class="k">Soil temp</div>
+          <div class="v">${p.soilTemp.toFixed(1)}<small>°C</small></div>
+        </div>
+      </div>
+      <div class="updated"><span class="pulse"></span>Live soil sensors · reading captured ${p.hoursAgo} h ago</div>`;
+    body.querySelector("#backGrid").onclick=()=>renderPatchGrid(h,b);
+    body.scrollTop=0;
+  }
+
+  /* ---------- drawer open/close ---------- */
+  function openDrawer(){ drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden","false"); }
+  function closeDrawer(){ drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden","true"); state.bedId=null; }
+  function wireDrawerClose(){
+    drawer.querySelectorAll(".x,[data-close]").forEach(el=>el.onclick=closeDrawer);
+  }
+  scrim.onclick=closeDrawer;
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeDrawer(); });
+
+  /* ---------- render dispatch ---------- */
+  function render(){
+    renderCrumb();
+    if(state.level==="farm") renderFarm();
+    else if(state.level==="house") renderHouse();
+    window.scrollTo({top:0, behavior:"instant"in window?"instant":"auto"});
+  }
+  render();
+})();
+</script>
