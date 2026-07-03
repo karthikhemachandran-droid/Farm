@@ -21,8 +21,7 @@
   header{position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:18px; flex-wrap:wrap;
     padding:14px clamp(16px,4vw,40px); background:rgba(251,250,246,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
   .brand{display:flex; align-items:center; gap:12px}
-  .brand .mark{width:38px; height:38px; border-radius:11px; flex:none; background:linear-gradient(150deg,var(--green),var(--green-lo));
-    display:grid; place-items:center; color:#EAF3E7; box-shadow:var(--shadow)}
+  .brand .mark{width:38px; height:38px; border-radius:11px; flex:none; background:linear-gradient(150deg,var(--green),var(--green-lo)); display:grid; place-items:center; color:#EAF3E7; box-shadow:var(--shadow)}
   .brand h1{font-family:var(--serif); font-size:19px; font-weight:600}
   .brand p{margin:0; font-size:11.5px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
   nav.crumb{display:flex; align-items:center; gap:6px; font-size:13.5px; flex-wrap:wrap; margin-left:auto}
@@ -48,8 +47,7 @@
   .palm-edge.mid .palm{width:14px; height:14px; flex:none}
   .houses{position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; gap:clamp(10px,2.2vw,22px); max-width:820px; margin:0 auto}
   .ghouse{position:relative; text-align:left; border-radius:6px; overflow:hidden; padding:0; border:1px solid #b9ae93; box-shadow:var(--shadow); transition:transform .3s ease, opacity .3s ease; transform-origin:center}
-  .ghouse .roofsat{height:clamp(140px,18vw,200px); position:relative;
-    background:repeating-linear-gradient(0deg, rgba(90,105,95,.16) 0 1px, transparent 1px 7px), repeating-linear-gradient(90deg, rgba(90,110,95,.10) 0 1px, transparent 1px 46px), linear-gradient(180deg,#eef1ec,#dfe4dc)}
+  .ghouse .roofsat{height:clamp(140px,18vw,200px); position:relative; background:repeating-linear-gradient(0deg, rgba(90,105,95,.16) 0 1px, transparent 1px 7px), repeating-linear-gradient(90deg, rgba(90,110,95,.10) 0 1px, transparent 1px 46px), linear-gradient(180deg,#eef1ec,#dfe4dc)}
   .ghouse .roofsat::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(90deg, transparent 0 44px, rgba(70,90,72,.28) 44px 46px)}
   .ghouse .roofsat::after{content:""; position:absolute; inset:0; background:linear-gradient(115deg, rgba(255,255,255,.4), transparent 60%)}
   .ghouse .tagpill{position:absolute; left:10px; top:10px; z-index:3; background:rgba(20,26,20,.62); color:#eef3ea; font-size:11px; font-weight:600; padding:4px 9px; border-radius:8px; backdrop-filter:blur(3px)}
@@ -86,20 +84,26 @@
   .arch-lab .clr{text-transform:none; letter-spacing:0; color:var(--danger); font-weight:600; font-size:11.5px; padding:2px 6px; border-radius:6px}
   .arch-lab .clr:hover{background:#faeae6}
   .arch-lab span{color:var(--muted-2); font-family:var(--mono); font-size:10px}
+  .row-axis{display:flex; align-items:center; gap:8px; font-size:10.5px; color:var(--muted-2); font-family:var(--mono); margin-bottom:4px}
+
   .matrix-scroll{overflow-x:auto; padding:2px 0 8px}
   .matrixInner{position:relative; width:max-content}
-  .barrow{display:flex; gap:3px; padding:10px; background:var(--sand); border:1px solid var(--sand-dk); border-radius:9px}
-  .bedbar{width:18px; height:130px; border-radius:3px; border:1px solid rgba(0,0,0,.08); position:relative; cursor:pointer; transition:transform .12s, box-shadow .12s; overflow:hidden}
-  .bedbar:hover,.bedbar:focus-visible{transform:translateY(-3px); box-shadow:0 6px 14px rgba(0,0,0,.22); outline:none; z-index:6}
-  .bedbar:focus-visible{outline:2px solid var(--ink)}
-  .bedbar.empty{background:repeating-linear-gradient(45deg,#eee7d7 0 4px,#e0d8c6 4px 8px)}
-  .bedbar .dmgflag{position:absolute; top:2px; left:50%; transform:translateX(-50%); font-size:9px; color:#fff; font-weight:700; background:var(--danger); border-radius:3px; padding:0 2px; line-height:1.4}
-  .archline{position:absolute; top:6px; bottom:6px; width:2px; background:rgba(60,80,60,.28); z-index:5; pointer-events:none}
+  .grid{display:grid; grid-auto-flow:column; grid-template-rows:repeat(50,11px); grid-auto-columns:11px; gap:1px 3px; padding:10px;
+    background:var(--sand); border:1px solid var(--sand-dk); border-radius:9px}
+  .cell{width:11px; height:11px; border-radius:1.5px; border:1px solid rgba(0,0,0,.06); position:relative; transition:transform .1s ease}
+  .cell.empty,.cell.pending{background:repeating-linear-gradient(45deg,#eee7d7 0 3px,#e0d8c6 3px 6px)}
+  .cell.dmg{background:#f2ddd6}
+  .cell.dmg::after{content:""; position:absolute; inset:1px; background:linear-gradient(45deg,transparent 42%,var(--danger) 42% 58%,transparent 58%),linear-gradient(-45deg,transparent 42%,var(--danger) 42% 58%,transparent 58%)}
+  .cell.clickable{cursor:pointer}
+  .cell.clickable:hover{transform:scale(1.9); z-index:6; box-shadow:0 3px 9px rgba(0,0,0,.3); border-color:rgba(255,255,255,.85); border-radius:2px}
+  .archline{position:absolute; top:6px; bottom:6px; width:2px; background:rgba(60,80,60,.3); z-index:5; pointer-events:none}
+  .plantLayer{position:absolute; inset:0; z-index:9; pointer-events:none}
+  .runner{position:absolute; font-size:17px; transform:translate(-50%,-60%); transition:left .05s linear, top .05s linear; opacity:0; filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
   .sensorLayer{position:absolute; inset:0; z-index:7; pointer-events:none}
-  .hotspot{position:absolute; width:13px; height:13px; border-radius:50%; transform:translate(-50%,-50%); background:rgba(31,92,61,.16); border:1px solid rgba(31,92,61,.4); cursor:crosshair; pointer-events:auto; transition:.1s}
-  .hotspot:hover{background:rgba(31,92,61,.5); transform:translate(-50%,-50%) scale(1.5)}
+  .hotspot{position:absolute; width:12px; height:12px; border-radius:50%; transform:translate(-50%,-50%); background:rgba(31,92,61,.18); border:1px solid rgba(31,92,61,.45); cursor:crosshair; pointer-events:auto; transition:.1s}
+  .hotspot:hover{background:rgba(31,92,61,.55); transform:translate(-50%,-50%) scale(1.6)}
   .sensor{position:absolute; transform:translate(-50%,-50%); z-index:8; cursor:pointer; pointer-events:auto; color:var(--green)}
-  .sensor svg{display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+  .sensor svg{display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
   .sensor:hover{color:var(--green-lo)}
   .axis-note{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:8px; font-size:11.5px; color:var(--muted)}
 
@@ -156,7 +160,7 @@
   .stepper{display:flex; align-items:center; gap:12px; margin:2px 0 6px}
   .stepper button{width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:#fff; font-size:18px; font-weight:600}
   .stepper button:disabled{opacity:.4; cursor:not-allowed}
-  .stepper .val{font-family:var(--mono); font-size:16px; font-weight:600; min-width:150px; text-align:center}
+  .stepper .val{font-family:var(--mono); font-size:15px; font-weight:600; min-width:150px; text-align:center}
   .kpis{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
   .kpi{flex:1; min-width:120px; background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:11px 13px}
   .kpi .k{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
@@ -173,18 +177,7 @@
   .ts-chart .th{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:4px}
   .ts-chart .th b{color:var(--ink); font-family:var(--mono)}
   .influx{font-size:12px; color:var(--muted); background:var(--green-hi); border:1px solid #cfe0cb; border-radius:9px; padding:9px 11px; display:flex; gap:8px; align-items:center; margin-bottom:14px}
-  /* planting lane + runner */
-  .lane-wrap{position:relative; margin:8px 0 2px}
-  .lane-scroll{overflow-x:auto; padding:26px 0 6px}
-  .lane{display:flex; gap:2px; position:relative; width:max-content}
-  .pcell{width:15px; height:26px; border-radius:2px; border:1px solid rgba(0,0,0,.08); background:repeating-linear-gradient(45deg,#eee7d7 0 3px,#e0d8c6 3px 6px); transition:background .12s}
-  .pcell.on{border-color:rgba(255,255,255,.7)}
-  .pcell.dmg{background:#f2ddd6; position:relative}
-  .pcell.dmg::after{content:"✕"; position:absolute; inset:0; display:grid; place-items:center; color:var(--danger); font-size:11px; font-weight:700}
-  .pcell.sel{outline:2px solid var(--ink); outline-offset:1px; z-index:2}
-  .bedsep{width:3px; flex:none}
-  .runner{position:absolute; top:-24px; font-size:20px; transition:left .05s linear; transform:translateX(-50%); z-index:3}
-  .lane-label{font-size:11px; color:var(--muted); font-family:var(--mono); margin-bottom:2px}
+  .lane-label{font-size:11px; color:var(--muted); font-family:var(--mono)}
   .toast{position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px); background:var(--ink); color:#eaf3e7; padding:12px 20px; border-radius:11px; font-size:14px; font-weight:500; opacity:0; pointer-events:none; transition:.3s; z-index:60; box-shadow:var(--shadow)}
   .toast.on{opacity:1; transform:translate(-50%,0)}
 </style>
@@ -219,8 +212,8 @@
   };
   const CROP_IDS=Object.keys(CROPS);
   const ARCHES=["A","B","C"], BEDS_PER_ARCH=20, PATCHES_PER_BED=50;
-  const COLS=ARCHES.length*BEDS_PER_ARCH;
-  const BARW=18, GX=3, BARH=130, PAD=10, SROWS=5;
+  const COLS=ARCHES.length*BEDS_PER_ARCH, ROWS=PATCHES_PER_BED;
+  const CELL=11, GX=3, GY=1, PAD=10, SENSOR_ROWS=[0,10,20,30,40,50];
 
   function rng(seed){let x=(seed*2654435761%2147483647)||1; return ()=> (x=x*48271%2147483647)/2147483647;}
   function seedCropFor(hid,arch,col){
@@ -252,10 +245,8 @@
     sensors:[], inspections:[], sensorSeq:0, inspSeq:0,
     zones:[1,2,3].map(z=>{const r=rng(hid*97+z*31); return {z, temp:+(30+r()*2).toFixed(1), humid:+(48+r()*9).toFixed(1)};}),
   }));
-  HOUSES.forEach(h=>{
-    h.sensors.push({id:"S1",c:20,r:2},{id:"S2",c:40,r:3},{id:"S3",c:7,r:1}); h.sensorSeq=3;
-    h.inspections.push({id:"I1", at:NOW-2*DAY, by:"R. Nair", area:"Arch A", status:"ok", notes:"Routine walk-through, canopy healthy."});
-  });
+  HOUSES.forEach(h=>{ h.sensors.push({id:"S1",c:20,r:20},{id:"S2",c:40,r:30},{id:"S3",c:7,r:10}); h.sensorSeq=3;
+    h.inspections.push({id:"I1", at:NOW-2*DAY, by:"R. Nair", area:"Arch A", status:"ok", notes:"Routine walk-through, canopy healthy."}); });
   const WEATHER={name:"ECOWITT WN90LP", outTemp:36.2, outHumid:46, windSpd:2.3, windDir:280, solar:0, uv:0, pressure:989.6, rain:0.3};
 
   const plantedCount=h=>h.beds.filter(b=>b.crop).length;
@@ -273,14 +264,13 @@
   function hx(h){h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.substr(i,2),16));}
   function rgb(a){return '#'+a.map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');}
   function mix(a,b,t){const A=hx(a),B=hx(b);return rgb(A.map((v,i)=>Math.round(v+(B[i]-v)*t)));}
-  function barColor(bed,mode){
-    if(!bed.crop) return null;
-    if(mode==="ph") return phColorHex(phClass(avgPh(bed),bed.crop).key);
-    if(mode==="moist"){const t=Math.max(0,Math.min(1,(avgMoist(bed)-40)/45)); return mix("#cfe2f0","#2f6d9e",t);}
-    return CROPS[bed.crop].color;
+  function cellColor(patch,crop,mode){
+    if(mode==="ph") return phColorHex(phClass(patch.ph,crop).key);
+    if(mode==="moist"){const t=Math.max(0,Math.min(1,(patch.moisture-40)/45)); return mix("#cfe2f0","#2f6d9e",t);}
+    return CROPS[crop].color;
   }
 
-  let state={level:"farm", houseId:null, tool:"plan", colorMode:"crop"};
+  let state={level:"farm", houseId:null, tool:"plan", colorMode:"crop", anim:null};
   let animTimer=null;
   const stage=document.getElementById("stage"), crumb=document.getElementById("crumb");
   const drawer=document.getElementById("drawer"), scrim=document.getElementById("scrim"), toastEl=document.getElementById("toast");
@@ -292,56 +282,38 @@
     let html=`<button ${state.level==="farm"?'class="cur"':''} data-nav="farm">Farm</button>`;
     if(state.houseId){const h=houseById(state.houseId); html+=`<span class="sep">›</span><button class="cur" data-nav="house">${h.name}</button>`;}
     crumb.innerHTML=html;
-    crumb.querySelectorAll("button").forEach(b=>b.onclick=()=>{closeDrawer(); if(b.dataset.nav==="farm"){state.level="farm";state.houseId=null;} render();});
+    crumb.querySelectorAll("button").forEach(b=>b.onclick=()=>{closeDrawer(); if(b.dataset.nav==="farm"){state.level="farm";state.houseId=null;state.anim=null;} render();});
   }
 
   function renderFarm(){
     const totalBeds=HOUSES.reduce((s,h)=>s+h.beds.length,0), totalPlanted=HOUSES.reduce((s,h)=>s+plantedCount(h),0);
     stage.innerHTML=`
       <div class="view">
-        <div class="view-head">
-          <div class="eyebrow">Farm site · company-owned land</div>
-          <h2>Farm overview</h2>
-          <p class="lede">Four net-house greenhouses in a 2×2 block in the desert, ringed by date palms with a shared water reservoir. ${totalPlanted} of ${totalBeds} beds planted. Select a greenhouse to open its planting grid.</p>
-        </div>
-        <div class="site">
-          <div class="palm-edge top">${palms(16)}</div><div class="palm-edge bot">${palms(16)}</div><div class="palm-edge mid">${palms(9)}</div>
-          <div class="houses">${HOUSES.map(ghouseCard).join("")}</div>
-          <div class="tank"><span>Water reservoir</span></div>
-        </div>
-        <button class="wxbar" id="wxbar">
-          <span class="ic">⛅</span>
+        <div class="view-head"><div class="eyebrow">Farm site · company-owned land</div><h2>Farm overview</h2>
+          <p class="lede">Four net-house greenhouses in a 2×2 block in the desert, ringed by date palms with a shared water reservoir. ${totalPlanted} of ${totalBeds} beds planted. Select a greenhouse to open its planting grid.</p></div>
+        <div class="site"><div class="palm-edge top">${palms(16)}</div><div class="palm-edge bot">${palms(16)}</div><div class="palm-edge mid">${palms(9)}</div>
+          <div class="houses">${HOUSES.map(ghouseCard).join("")}</div><div class="tank"><span>Water reservoir</span></div></div>
+        <button class="wxbar" id="wxbar"><span class="ic">⛅</span>
           <span class="t"><b>Farm weather station</b><div>${WEATHER.name} · click for live readings &amp; progression</div></span>
-          <span class="now"><b class="tnum">${WEATHER.outTemp}°C</b> · ${WEATHER.outHumid}% RH<br>${WEATHER.windSpd} km/h · ${WEATHER.pressure} hPa</span>
-        </button>
+          <span class="now"><b class="tnum">${WEATHER.outTemp}°C</b> · ${WEATHER.outHumid}% RH<br>${WEATHER.windSpd} km/h · ${WEATHER.pressure} hPa</span></button>
       </div>`;
     stage.querySelectorAll(".ghouse").forEach(el=>el.onclick=()=>enterHouse(el,+el.dataset.h));
     document.getElementById("wxbar").onclick=openWeather;
   }
   const palms=n=>Array.from({length:n}).map(()=>'<span class="palm"></span>').join("");
-  function ghouseCard(h){
-    const planted=plantedCount(h), total=h.beds.length;
-    return `<button class="ghouse" data-h="${h.id}" aria-label="${h.name}, ${planted} of ${total} beds planted">
-      <div class="roofsat"></div><span class="tagpill">${h.name}</span>
+  function ghouseCard(h){ const planted=plantedCount(h), total=h.beds.length;
+    return `<button class="ghouse" data-h="${h.id}" aria-label="${h.name}, ${planted} of ${total} beds planted"><div class="roofsat"></div><span class="tagpill">${h.name}</span>
       <div class="meta"><div class="r1"><h3>${h.name}</h3><span class="dim tnum">${h.widthM}×${h.lengthM} m</span></div>
-        <div class="stat"><b class="tnum">${planted}</b>/${total} beds · <b class="tnum">${cropsInHouse(h)}</b> crops · <b class="tnum">${h.sensors.length}</b> sensors</div></div>
-    </button>`;
-  }
-  function enterHouse(el,id){
-    const go=()=>{state.level="house"; state.houseId=id; state.tool="plan"; render();};
-    if(reduceMotion()) return go();
-    el.parentElement.classList.add("leaving"); el.classList.add("zoom"); setTimeout(go,360);
-  }
+      <div class="stat"><b class="tnum">${planted}</b>/${total} beds · <b class="tnum">${cropsInHouse(h)}</b> crops · <b class="tnum">${h.sensors.length}</b> sensors</div></div></button>`; }
+  function enterHouse(el,id){ const go=()=>{state.level="house"; state.houseId=id; state.tool="plan"; state.anim=null; render();};
+    if(reduceMotion()) return go(); el.parentElement.classList.add("leaving"); el.classList.add("zoom"); setTimeout(go,360); }
 
   function renderHouse(){
     const h=houseById(state.houseId), planted=plantedCount(h), total=h.beds.length;
     stage.innerHTML=`
       <div class="view">
-        <div class="view-head">
-          <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches (one house)</div>
-          <h2>${h.name} — planting grid</h2>
-          <p class="lede">60 beds side by side, each a 1 × 50 m strip of 50 monitored 1 × 1 m patches. Click a bed to plant it (and up to 5 adjacent empty beds) or to open the full bed. Place soil sensors on the crossings; open greenhouse climate or the weather station for progression.</p>
-        </div>
+        <div class="view-head"><div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches (one house)</div><h2>${h.name} — planting grid</h2>
+          <p class="lede">Every 1 × 1 m patch is shown: 60 beds side by side, each a 1 × 50 m strip (a tall column of 50 patches, front at top). Click a bed to plant it (and up to 5 adjacent empty beds) — the planter runs down the bed filling patches. Place soil sensors on the crossings.</p></div>
         <div class="house-wrap">
           <div class="plan-card">
             <div class="toolbar">
@@ -351,84 +323,83 @@
             ${toolHint()}
             <div class="arch-labels" style="--pad:${PAD}px">${archLabels(h)}</div>
             <div class="matrix-scroll"><div class="matrixInner" style="width:${gridWidthPx()}px">
-              <div class="barrow">${buildBars(h)}</div>${archLines()}
+              <div class="grid" id="grid">${buildCells(h)}</div>${archLines()}
               <div class="sensorLayer">${buildSensors(h)}</div>
+              <div class="plantLayer"><span class="runner" id="prunner">🏃</span></div>
             </div></div>
-            <div class="axis-note"><span>Each bar = 1 bed (1 × 50 m). ↕ length runs top→bottom. ↔ 60 beds (3 arches × 20)</span><span>${planted}/${total} beds planted</span></div>
+            <div class="axis-note"><span>Each column = 1 bed (1 × 50 m). Top = front (P1) → bottom = back (P50). ↔ 60 beds (3 arches × 20)</span><span>${planted}/${total} beds planted</span></div>
           </div>
           <div class="side">${climatePanel(h)}${sidePanels(h)}</div>
         </div>
       </div>`;
     wireHouse(h);
+    if(state.anim) runPlantAnim(h);
   }
   const tab=(t,l)=>`<button role="tab" data-tool="${t}" class="${state.tool===t?'on':''}" aria-selected="${state.tool===t}">${l}</button>`;
   const cbtn=(m,l)=>`<button data-cmode="${m}" class="${state.colorMode===m?'on':''}">${l}</button>`;
   function toolHint(){
-    const map={plan:"Click an empty bed to assign a crop — extend to up to 5 adjacent empty beds. Click a planted bed to open its full 50-patch view.",
+    const map={plan:"Click an empty bed to assign a crop (extend to up to 5 adjacent empty beds). Click a planted bed for its harvest date and to clear it.",
       sensor:"Click a grid crossing (○) to place a soil sensor. Click a sensor ✚ for its full readings (temp, moisture, pH, EC, salinity, NPK).",
-      inspect:"Log an inspection, or click a bed to report pest/damage — mark patches ✕ and remove the plants from a chosen section."};
+      inspect:"Click a patch to report pest/damage — mark a section ✕ and remove its plants. Or log a general inspection in the panel."};
     return `<p class="picker-note" style="margin:-4px 0 14px">${map[state.tool]}</p>`;
   }
   function archLabels(h){
-    return h.arches.map(a=>{const beds=h.beds.filter(b=>b.arch===a), pl=beds.filter(b=>b.crop).length, w=BEDS_PER_ARCH*(BARW+GX);
+    return h.arches.map(a=>{const beds=h.beds.filter(b=>b.arch===a), pl=beds.filter(b=>b.crop).length, w=BEDS_PER_ARCH*(CELL+GX);
       return `<div class="arch-lab" style="width:${w}px">Arch ${a} <span>${pl}/${BEDS_PER_ARCH}</span>${state.tool==="plan"?`<button class="clr" data-cleararch="${a}">Clear arch</button>`:""}</div>`;}).join("");
   }
-  const gridWidthPx=()=>PAD*2+COLS*BARW+(COLS-1)*GX;
-  const colX=c=>PAD+c*(BARW+GX)-GX/2;
-  const rowY=r=>PAD+r*(BARH/SROWS);
+  const gridWidthPx=()=>PAD*2+COLS*CELL+(COLS-1)*GX;
+  const colX=c=>PAD+c*(CELL+GX)-GX/2;
+  const rowY=r=>PAD+r*(CELL+GY)-GY/2;
+  const cellCX=i=>PAD+i*(CELL+GX)+CELL/2;
+  const cellCY=r=>PAD+r*(CELL+GY)+CELL/2;
   function archLines(){ return [BEDS_PER_ARCH,BEDS_PER_ARCH*2].map(c=>`<div class="archline" style="left:${colX(c)}px"></div>`).join(""); }
-  function buildBars(h){
-    return h.beds.map(b=>{
-      const dmg=b.patches.filter(p=>p.damaged).length;
-      let style="", title="Bed "+b.id+" · empty", cls="bedbar"+(b.crop?"":" empty");
-      if(b.crop){ style=`background:${barColor(b,state.colorMode)}`; const days=Math.round((b.harvestAt-NOW)/DAY);
-        title=`${b.id} · ${CROPS[b.crop].name} · planted ${fmtShort(b.plantedAt)} · harvest ~${fmtShort(b.harvestAt)}${days>0?` (${days} d)`:" (ready)"}`; }
-      return `<button class="${cls}" data-bed="${b.id}" style="${style}" title="${title}">${dmg?`<span class="dmgflag">${dmg}✕</span>`:""}</button>`;
-    }).join("");
+  function buildCells(h){
+    const animSet=state.anim?new Set(state.anim.beds.map(b=>b.id)):null;
+    let s="";
+    h.beds.forEach(b=>{
+      const animing=animSet&&animSet.has(b.id);
+      for(let r=0;r<PATCHES_PER_BED;r++){
+        const p=b.crop?b.patches[r]:null;
+        const clickable=(state.tool==="plan")||(state.tool==="inspect"&&p);
+        let cls="cell"+(clickable?" clickable":""), style="", title="Bed "+b.id;
+        if(!p){ cls+=" empty"; title="Bed "+b.id+" · empty"; }
+        else if(p.damaged){ cls+=" dmg"; title=p.id+" · removed (pest/damage)"; }
+        else if(animing){ cls+=" pending"; title=p.id; }
+        else { style=`background:${cellColor(p,b.crop,state.colorMode)}`; title=`${p.id} · ${CROPS[b.crop].name} · pH ${p.ph.toFixed(1)} · harvest ~${fmtShort(b.harvestAt)}`; }
+        s+=`<div class="${cls}" data-bed="${b.id}" data-p="${r}" style="${style}" title="${title}"></div>`;
+      }
+    });
+    return s;
   }
   function buildSensors(h){
     let s="";
-    if(state.tool==="sensor"){ for(let c=0;c<=COLS;c++) for(let r=0;r<=SROWS;r++)
+    if(state.tool==="sensor"){ for(let c=0;c<=COLS;c++) for(const r of SENSOR_ROWS)
       s+=`<div class="hotspot" data-c="${c}" data-r="${r}" style="left:${colX(c)}px;top:${rowY(r)}px" title="Place sensor here"></div>`; }
-    h.sensors.forEach(sn=>{ s+=`<div class="sensor" data-sensor="${sn.id}" style="left:${colX(sn.c)}px;top:${rowY(sn.r)}px" title="Sensor ${sn.id} — view readings" tabindex="0" role="button" aria-label="Sensor ${sn.id}">
-      <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 1v20M1 11h20" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M11 2v18M2 11h18" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></div>`; });
+    h.sensors.forEach(sn=>{ s+=`<div class="sensor" data-sensor="${sn.id}" style="left:${colX(sn.c)}px;top:${rowY(sn.r)}px" title="Sensor ${sn.id}" tabindex="0" role="button" aria-label="Sensor ${sn.id}">
+      <svg width="20" height="20" viewBox="0 0 22 22"><path d="M11 1v20M1 11h20" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M11 2v18M2 11h18" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></div>`; });
     return s;
   }
-  function climatePanel(h){
-    return `<div class="panel"><h4>Greenhouse climate <button class="mini-btn" id="climateBtn">View progression</button></h4>
-      ${h.zones.map(z=>`<div class="zone-row"><span>Zone ${z.z} (Arch ${ARCHES[z.z-1]})</span><span><b style="color:var(--temp)">${z.temp}°C</b> · <b style="color:var(--humid)">${z.humid}%</b></span></div>`).join("")}</div>`;
-  }
-  function sidePanels(h){
-    if(state.tool==="sensor") return sensorPanel(h)+cropLegend(h);
-    if(state.tool==="inspect") return inspectPanel(h)+legendForColor();
-    return cropLegend(h)+legendForColor();
-  }
+  function climatePanel(h){ return `<div class="panel"><h4>Greenhouse climate <button class="mini-btn" id="climateBtn">View progression</button></h4>
+    ${h.zones.map(z=>`<div class="zone-row"><span>Zone ${z.z} (Arch ${ARCHES[z.z-1]})</span><span><b style="color:var(--temp)">${z.temp}°C</b> · <b style="color:var(--humid)">${z.humid}%</b></span></div>`).join("")}</div>`; }
+  function sidePanels(h){ if(state.tool==="sensor") return sensorPanel(h)+cropLegend(h); if(state.tool==="inspect") return inspectPanel(h)+legendForColor(); return cropLegend(h)+legendForColor(); }
   function legendForColor(){
     if(state.colorMode==="ph") return `<div class="panel"><h4>Soil pH</h4><div class="chips"><span class="chip"><span class="sw round" style="background:var(--ph-acid)"></span>Acidic</span><span class="chip"><span class="sw round" style="background:var(--ph-ideal)"></span>Ideal</span><span class="chip"><span class="sw round" style="background:var(--ph-alk)"></span>Alkaline</span></div></div>`;
     if(state.colorMode==="moist") return `<div class="panel"><h4>Soil moisture</h4><div class="chips"><span class="chip"><span class="sw" style="width:70px;background:linear-gradient(90deg,#cfe2f0,#2f6d9e)"></span></span><span class="chip" style="color:var(--muted)">Dry → Wet</span></div></div>`;
     return "";
   }
-  function cropLegend(h){
-    const used=new Set(h.beds.filter(b=>b.crop).map(b=>b.crop));
-    return `<div class="panel"><h4>Crops</h4><div class="chips">${CROP_IDS.map(k=>`<span class="chip" style="opacity:${used.has(k)?1:.42}"><span class="sw" style="background:${CROPS[k].color}"></span>${CROPS[k].name}</span>`).join("")}<span class="chip" style="opacity:.7"><span class="sw" style="background:repeating-linear-gradient(45deg,#eee7d7 0 4px,#e0d8c6 4px 8px)"></span>Empty</span></div></div>`;
-  }
-  function sensorPanel(h){
-    const rows=h.sensors.map(sn=>`<div class="sensor-item"><span>✚ ${sn.id} <span style="color:var(--muted)">· ${sn.c},${sn.r}</span></span><button data-viewsensor="${sn.id}">View</button></div>`).join()||`<div class="empty-note">No sensors yet — click a crossing to place one.</div>`;
-    return `<div class="panel"><h4>Soil sensors <span class="tnum" style="color:var(--muted);font-weight:600">${h.sensors.length}</span></h4>${rows}</div>`;
-  }
-  function inspectPanel(h){
-    const rows=h.inspections.slice().reverse().map(ins=>`<tr><td class="tnum">${fmtShort(ins.at)}</td><td>${ins.area}</td><td><span class="stat-pill ${ins.status==='ok'?'stat-ok':ins.status==='pest'?'stat-pest':'stat-dmg'}">${ins.status.toUpperCase()}</span></td><td>${ins.notes||""}</td></tr>`).join()||`<tr><td colspan="4" class="empty-note">No inspections yet.</td></tr>`;
-    return `<div class="panel"><h4>Inspections <button class="mini-btn" id="logInsp">＋ Log</button></h4><table class="log"><thead><tr><th>Date</th><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  }
+  function cropLegend(h){ const used=new Set(h.beds.filter(b=>b.crop).map(b=>b.crop));
+    return `<div class="panel"><h4>Crops</h4><div class="chips">${CROP_IDS.map(k=>`<span class="chip" style="opacity:${used.has(k)?1:.42}"><span class="sw" style="background:${CROPS[k].color}"></span>${CROPS[k].name}</span>`).join("")}<span class="chip" style="opacity:.7"><span class="sw" style="background:repeating-linear-gradient(45deg,#eee7d7 0 4px,#e0d8c6 4px 8px)"></span>Empty</span><span class="chip" style="opacity:.85"><span class="sw" style="background:#f2ddd6;border-color:var(--danger)"></span>Removed ✕</span></div></div>`; }
+  function sensorPanel(h){ const rows=h.sensors.map(sn=>`<div class="sensor-item"><span>✚ ${sn.id} <span style="color:var(--muted)">· ${sn.c},${sn.r}</span></span><button data-viewsensor="${sn.id}">View</button></div>`).join()||`<div class="empty-note">No sensors yet — click a crossing.</div>`;
+    return `<div class="panel"><h4>Soil sensors <span class="tnum" style="color:var(--muted);font-weight:600">${h.sensors.length}</span></h4>${rows}</div>`; }
+  function inspectPanel(h){ const rows=h.inspections.slice().reverse().map(ins=>`<tr><td class="tnum">${fmtShort(ins.at)}</td><td>${ins.area}</td><td><span class="stat-pill ${ins.status==='ok'?'stat-ok':ins.status==='pest'?'stat-pest':'stat-dmg'}">${ins.status.toUpperCase()}</span></td><td>${ins.notes||""}</td></tr>`).join()||`<tr><td colspan="4" class="empty-note">No inspections yet.</td></tr>`;
+    return `<div class="panel"><h4>Inspections <button class="mini-btn" id="logInsp">＋ Log</button></h4><table class="log"><thead><tr><th>Date</th><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`; }
+
   function wireHouse(h){
     stage.querySelectorAll(".seg [data-tool]").forEach(b=>b.onclick=()=>{state.tool=b.dataset.tool; renderHouse();});
     stage.querySelectorAll(".seg [data-cmode]").forEach(b=>b.onclick=()=>{state.colorMode=b.dataset.cmode; renderHouse();});
     stage.querySelectorAll("[data-cleararch]").forEach(b=>b.onclick=()=>clearArch(h,b.dataset.cleararch));
-    stage.querySelectorAll(".bedbar").forEach(el=>el.onclick=()=>{
-      const b=bedById(h,el.dataset.bed);
-      if(state.tool==="inspect") openDamage(h,b);
-      else openBed(h,b);
-    });
+    stage.querySelectorAll(".cell.clickable").forEach(el=>el.onclick=()=>{ const b=bedById(h,el.dataset.bed), r=+el.dataset.p;
+      if(state.tool==="plan") openBed(h,b); else if(state.tool==="inspect") openDamage(h,b,r); });
     stage.querySelectorAll(".hotspot").forEach(el=>el.onclick=()=>toggleSensor(h,+el.dataset.c,+el.dataset.r));
     stage.querySelectorAll(".sensor").forEach(el=>{el.onclick=()=>openSensor(h,el.dataset.sensor); el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openSensor(h,el.dataset.sensor);}};});
     stage.querySelectorAll("[data-viewsensor]").forEach(b=>b.onclick=()=>openSensor(h,b.dataset.viewsensor));
@@ -438,37 +409,49 @@
   function clearArch(h,arch){const beds=h.beds.filter(b=>b.arch===arch&&b.crop); if(!beds.length){toast("Arch "+arch+" is already empty");return;} beds.forEach(clearBed); toast(`Cleared ${beds.length} beds in Arch ${arch}`); renderHouse();}
   function toggleSensor(h,c,r){const i=h.sensors.findIndex(s=>s.c===c&&s.r===r); if(i>=0){const id=h.sensors[i].id; h.sensors.splice(i,1); toast("Removed sensor "+id);} else {const id="S"+(++h.sensorSeq); h.sensors.push({id,c,r}); toast("Placed sensor "+id);} renderHouse();}
 
+  /* planting animation ON the grid */
+  function runPlantAnim(h){
+    const a=state.anim, grid=document.getElementById("grid"), runner=document.getElementById("prunner");
+    if(!a||!grid||!runner){ state.anim=null; return; }
+    const order=[]; a.beds.forEach(b=>{ const bi=h.beds.indexOf(b); for(let r=0;r<ROWS;r++) order.push({bi,r,b}); });
+    const finish=()=>{ state.anim=null; renderHouse(); toast(`Planted ${a.beds.length} bed(s) with ${CROPS[a.cropId].name}`); };
+    if(reduceMotion()){ finish(); return; }
+    runner.style.opacity=1; const sc=document.querySelector(".matrix-scroll");
+    let n=0; const total=order.length, step=Math.max(14,Math.min(38,Math.round(2600/total)));
+    if(animTimer) clearInterval(animTimer);
+    animTimer=setInterval(()=>{
+      if(n>=total){ clearInterval(animTimer); animTimer=null; finish(); return; }
+      const {bi,r,b}=order[n];
+      const el=grid.querySelector(`.cell[data-bed="${b.id}"][data-p="${r}"]`);
+      if(el){ el.style.background=cellColor(b.patches[r],b.crop,state.colorMode); el.classList.remove("pending"); }
+      runner.style.left=cellCX(bi)+"px"; runner.style.top=cellCY(r)+"px";
+      if(sc){ const rx=cellCX(bi); if(rx>sc.scrollLeft+sc.clientWidth-50) sc.scrollLeft=rx-sc.clientWidth+90; if(rx<sc.scrollLeft+40) sc.scrollLeft=Math.max(0,rx-40); }
+      n++;
+    },step);
+  }
+
   function openDrawer(){drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden","false");}
-  function closeDrawer(){drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden","true"); if(animTimer){clearInterval(animTimer); animTimer=null;}}
+  function closeDrawer(){drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden","true");}
   function wireClose(){drawer.querySelectorAll(".x,[data-close]").forEach(el=>el.onclick=closeDrawer);}
   scrim.onclick=closeDrawer;
   document.addEventListener("keydown",e=>{if(e.key==="Escape") closeDrawer();});
 
-  /* ---- plant with multi-bed selection ---- */
+  /* plant with multi-bed selection */
   let pickSel=null, pickBeds=1, pickMax=1, pickStart=0;
   function runFromIndex(h,startIdx,want){ const out=[]; for(let i=startIdx;i<h.beds.length&&out.length<want;i++){ if(h.beds[i].crop) break; out.push(i);} return out; }
-  function openBed(h,b){
-    if(b.crop){ renderBedDetail(h,b); openDrawer(); return; }
-    pickStart=h.beds.indexOf(b); pickBeds=1; pickSel=null;
-    pickMax=runFromIndex(h,pickStart,5).length;   // consecutive empty beds, capped at 5
-    renderPicker(h); openDrawer();
-  }
+  function openBed(h,b){ if(b.crop){ renderBedDetail(h,b); openDrawer(); return; }
+    pickStart=h.beds.indexOf(b); pickBeds=1; pickSel=null; pickMax=runFromIndex(h,pickStart,5).length; renderPicker(h); openDrawer(); }
   function renderPicker(h){
     const start=h.beds[pickStart], run=runFromIndex(h,pickStart,pickBeds), lastBed=h.beds[pickStart+pickBeds-1];
-    const blockedBy = (pickStart+pickMax<h.beds.length && h.beds[pickStart+pickMax].crop) ? h.beds[pickStart+pickMax] : null;
+    const blockedBy=(pickStart+pickMax<h.beds.length && h.beds[pickStart+pickMax].crop)?h.beds[pickStart+pickMax]:null;
     drawer.innerHTML=`
       <div class="drawer-head"><div><div class="id">${h.name} · from Bed ${start.id}</div><h3 id="drawer-title">Pick a plant</h3></div><button class="x" aria-label="Close">✕</button></div>
       <div class="drawer-body">
         <p class="picker-note">One crop per bed (a 1 × 50 m strip of 50 patches). Extend to adjacent empty beds — planting stops at any bed that already has a crop.</p>
         <div class="field"><label>Beds to plant (adjacent, max 5)</label>
-          <div class="stepper"><button id="decB" ${pickBeds<=1?'disabled':''}>–</button>
-            <span class="val">${run.map(i=>h.beds[i].id).join(", ")} <span style="color:var(--muted)">(${run.length})</span></span>
-            <button id="incB" ${pickBeds>=pickMax?'disabled':''}>+</button></div>
-          <div style="font-size:12px;color:${blockedBy?'var(--danger)':'var(--muted)'}">${blockedBy?`✕ ${blockedBy.id} is already planted — can't extend past ${lastBed.id}.`:`Up to ${pickMax} empty bed(s) available from here.`}</div>
-        </div>
-        <div class="field"><label>Crop</label>
-          <div class="crop-grid">${CROP_IDS.map(k=>{const c=CROPS[k];return `<button class="crop-opt ${pickSel===k?'sel':''}" data-crop="${k}"><span class="dot" style="background:${c.color}"></span><span class="nm">${c.name}</span><span class="lat">${c.latin}</span><span class="cyc">~${c.cycle} d · pH ${c.phLo}–${c.phHi}</span></button>`;}).join("")}</div>
-        </div>
+          <div class="stepper"><button id="decB" ${pickBeds<=1?'disabled':''}>–</button><span class="val">${run.map(i=>h.beds[i].id).join(", ")} <span style="color:var(--muted)">(${run.length})</span></span><button id="incB" ${pickBeds>=pickMax?'disabled':''}>+</button></div>
+          <div style="font-size:12px;color:${blockedBy?'var(--danger)':'var(--muted)'}">${blockedBy?`✕ ${blockedBy.id} is already planted — can't extend past ${lastBed.id}.`:`Up to ${pickMax} empty bed(s) available from here.`}</div></div>
+        <div class="field"><label>Crop</label><div class="crop-grid">${CROP_IDS.map(k=>{const c=CROPS[k];return `<button class="crop-opt ${pickSel===k?'sel':''}" data-crop="${k}"><span class="dot" style="background:${c.color}"></span><span class="nm">${c.name}</span><span class="lat">${c.latin}</span><span class="cyc">~${c.cycle} d · pH ${c.phLo}–${c.phHi}</span></button>`;}).join("")}</div></div>
       </div>
       <div class="drawer-foot"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="plantBtn" ${pickSel?'':'disabled'}>Plant ${run.length} bed(s)</button></div>`;
     wireClose();
@@ -477,75 +460,31 @@
     if(inc) inc.onclick=()=>{pickBeds=Math.min(pickMax,pickBeds+1); renderPicker(h);};
     drawer.querySelectorAll(".crop-opt").forEach(el=>el.onclick=()=>{pickSel=el.dataset.crop; renderPicker(h);});
     const pb=document.getElementById("plantBtn"); if(pb) pb.onclick=()=>{ if(!pickSel) return;
-      const run2=runFromIndex(h,pickStart,pickBeds), beds=run2.map(i=>h.beds[i]);
+      const beds=runFromIndex(h,pickStart,pickBeds).map(i=>h.beds[i]);
       beds.forEach(bd=>plantBed(bd,pickSel,false));
-      renderPlanting(h,beds,pickSel);
+      closeDrawer(); state.anim={beds, cropId:pickSel}; renderHouse();   // animate on the grid
     };
   }
-
-  /* ---- planting animation: runner fills patches ---- */
-  function laneHTML(beds,filledCount){
-    let cells="", idx=0;
-    beds.forEach((b,bi)=>{
-      if(bi>0) cells+=`<span class="bedsep"></span>`;
-      for(let i=0;i<PATCHES_PER_BED;i++){
-        const on=idx<filledCount, dmg=b.patches[i]&&b.patches[i].damaged;
-        cells+=`<span class="pcell ${dmg?'dmg':(on?'on':'')}" data-i="${idx}" style="${on&&!dmg?`background:${CROPS[b.crop].color}`:''}" title="${b.id}-P${String(i+1).padStart(2,'0')}"></span>`;
-        idx++;
-      }
-    });
-    return cells;
-  }
-  const pitch=17, cellW=15;
-  function renderPlanting(h,beds,cropId){
-    const total=beds.length*PATCHES_PER_BED;
-    drawer.innerHTML=`
-      <div class="drawer-head"><div><div class="id">${h.name} · ${beds.map(b=>b.id).join(", ")}</div><h3 id="drawer-title">Planting ${CROPS[cropId].name}…</h3></div><button class="x" aria-label="Close">✕</button></div>
-      <div class="drawer-body">
-        <p class="picker-note">Sowing each 1 × 1 m patch from the front of the bed to the back.</p>
-        <div class="lane-label">${beds.length} bed(s) × 50 patches = ${total} patches</div>
-        <div class="lane-wrap"><div class="lane-scroll"><div class="lane" id="lane">${laneHTML(beds,0)}<span class="runner" id="runner" style="left:0px">🏃</span></div></div></div>
-      </div>
-      <div class="drawer-foot"><button class="btn primary" id="doneBtn" disabled>Planting…</button></div>`;
-    wireClose();
-    const lane=document.getElementById("lane"), runner=document.getElementById("runner"), doneBtn=document.getElementById("doneBtn");
-    const finish=()=>{ lane.innerHTML=laneHTML(beds,total)+`<span class="runner" style="left:${(total-1)*pitch+cellW/2}px">✅</span>`;
-      doneBtn.disabled=false; doneBtn.textContent="Done"; doneBtn.onclick=()=>{ renderHouse(); toast(`Planted ${beds.length} bed(s) with ${CROPS[cropId].name}`); if(beds.length===1) renderBedDetail(h,beds[0]); else closeDrawer(); }; };
-    openDrawer();
-    if(reduceMotion()){ finish(); return; }
-    let n=0; const step=Math.max(16, Math.min(46, Math.round(2600/total)));
-    animTimer=setInterval(()=>{
-      n++;
-      // rebuild filled portion (cheap enough for <=250 cells)
-      const runnerEl=`<span class="runner" id="runner" style="left:${Math.min(n,total-1)*pitch+cellW/2}px">🏃</span>`;
-      lane.innerHTML=laneHTML(beds,n)+runnerEl;
-      const sc=lane.parentElement; const rx=Math.min(n,total-1)*pitch; if(rx>sc.scrollLeft+sc.clientWidth-60) sc.scrollLeft=rx-sc.clientWidth+120;
-      if(n>=total){ clearInterval(animTimer); animTimer=null; finish(); }
-    },step);
-  }
   function renderBedDetail(h,b){
-    const c=CROPS[b.crop], ap=avgPh(b), days=Math.round((b.harvestAt-NOW)/DAY), dmg=b.patches.filter(p=>p.damaged).length, total=PATCHES_PER_BED;
+    const c=CROPS[b.crop], ap=avgPh(b), days=Math.round((b.harvestAt-NOW)/DAY), dmg=b.patches.filter(p=>p.damaged).length;
     drawer.innerHTML=`
       <div class="drawer-head"><div><div class="id">${h.name} · Bed ${b.id}</div><h3 id="drawer-title"><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:${c.color};margin-right:7px;vertical-align:middle"></span>${c.name}</h3></div><button class="x" aria-label="Close">✕</button></div>
       <div class="drawer-body">
-        <div class="kpis">
-          <div class="kpi"><div class="k">Planted</div><div class="v" style="font-size:14px">${fmtDate(b.plantedAt)}</div></div>
+        <div class="kpis"><div class="kpi"><div class="k">Planted</div><div class="v" style="font-size:14px">${fmtDate(b.plantedAt)}</div></div>
           <div class="kpi"><div class="k">Proposed harvest</div><div class="v" style="font-size:14px">${fmtDate(b.harvestAt)}</div></div>
-          <div class="kpi"><div class="k">${days>0?"Days to harvest":"Status"}</div><div class="v">${days>0?days:"Ready ✓"}</div></div>
-        </div>
-        <div class="lane-label">Full bed — ${total} × 1 m patches (P1 front → P50 back)${dmg?` · ${dmg} removed`:""}</div>
-        <div class="lane-wrap"><div class="lane-scroll" style="padding-top:6px"><div class="lane">${laneHTML([b],total)}</div></div></div>
-        <div class="kpis" style="margin-top:14px"><div class="kpi"><div class="k">Avg soil pH</div><div class="v" style="color:${phColorHex(phClass(ap,b.crop).key)}">${ap.toFixed(1)}</div></div>
-          <div class="kpi"><div class="k">Avg moisture</div><div class="v">${Math.round(avgMoist(b))}<small>%</small></div></div></div>
+          <div class="kpi"><div class="k">${days>0?"Days to harvest":"Status"}</div><div class="v">${days>0?days:"Ready ✓"}</div></div></div>
+        <div class="kpis"><div class="kpi"><div class="k">Avg soil pH</div><div class="v" style="color:${phColorHex(phClass(ap,b.crop).key)}">${ap.toFixed(1)}</div></div>
+          <div class="kpi"><div class="k">Avg moisture</div><div class="v">${Math.round(avgMoist(b))}<small>%</small></div></div>
+          <div class="kpi"><div class="k">Patches</div><div class="v">${b.patches.length}${dmg?` <small>(${dmg} removed)</small>`:""}</div></div></div>
+        <p class="picker-note">This bed's ${PATCHES_PER_BED} patches are shown in the grid (its column). Switch the grid's colour mode to read pH or moisture across them.</p>
       </div>
       <div class="drawer-foot"><button class="btn danger" id="clearB">Clear bed</button><button class="btn ghost" id="changeC">Change crop</button><button class="btn primary" data-close>Done</button></div>`;
     wireClose();
     document.getElementById("changeC").onclick=()=>{clearBed(b); pickStart=h.beds.indexOf(b); pickBeds=1; pickSel=null; pickMax=runFromIndex(h,pickStart,5).length; renderPicker(h);};
     document.getElementById("clearB").onclick=()=>{clearBed(b); toast("Cleared bed "+b.id); renderHouse(); closeDrawer();};
-    openDrawer();
   }
 
-  /* ---- charts ---- */
+  /* charts */
   function seriesPath(seed,base,amp,w,hgt){
     const r=rng(seed), n=24; let pts=[], v=base;
     for(let i=0;i<n;i++){ v+=(r()-0.5)*amp*0.6; v=Math.max(base-amp,Math.min(base+amp,v)); pts.push(v); }
@@ -564,132 +503,82 @@
     const w=460,hgt=104; let paths="",legend="";
     series.forEach(s=>{const sp=seriesPath(s.seed,s.base,s.amp,w,hgt); paths+=`<path d="${sp.line}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
       legend+=`<span class="chip"><span class="sw" style="background:${s.color}"></span>${s.label} <b class="tnum">${sp.last.toFixed(s.dp||0)}${s.unit}</b></span>`;});
-    return `<div class="ts-chart"><div class="th"><span>${title}</span><span>−24 h → now</span></div>
-      <svg viewBox="0 0 ${w} ${hgt}" width="100%" preserveAspectRatio="none" style="height:104px">${paths}</svg>
-      <div class="chips" style="margin-top:6px">${legend}</div></div>`;
+    return `<div class="ts-chart"><div class="th"><span>${title}</span><span>−24 h → now</span></div><svg viewBox="0 0 ${w} ${hgt}" width="100%" preserveAspectRatio="none" style="height:104px">${paths}</svg><div class="chips" style="margin-top:6px">${legend}</div></div>`;
   }
-
-  function soilReadings(h,sn){
-    const b=h.beds[Math.min(sn.c,COLS-1)], p=(b&&b.patches.length)?b.patches[Math.min(sn.r*10,b.patches.length-1)]:null, r=rng(sn.c*137+sn.r*71+9);
-    return { bed:b, temp:p?p.soilTemp:+(24+r()*5).toFixed(1), moist:p?p.moisture:Math.round(45+r()*30), ph:p?p.ph:+(6+r()*1.4).toFixed(1),
-      ec:Math.round((p?p.ec:1.5)*1000), sal:Math.round((p?p.ec:1.5)*640), n:Math.round(40+r()*160), pP:Math.round(15+r()*90), k:Math.round(60+r()*220),
-      batt:(3.4+r()*0.3).toFixed(2), rssi:-(60+Math.floor(r()*40)) };
-  }
-  function openSensor(h,sid){
-    const sn=h.sensors.find(s=>s.id===sid); if(!sn) return; const d=soilReadings(h,sn), sd=sn.c*100+sn.r;
+  function soilReadings(h,sn){ const b=h.beds[Math.min(sn.c,COLS-1)], p=(b&&b.patches.length)?b.patches[Math.min(sn.r,b.patches.length-1)]:null, r=rng(sn.c*137+sn.r*71+9);
+    return { bed:b, temp:p?p.soilTemp:+(24+r()*5).toFixed(1), moist:p?p.moisture:Math.round(45+r()*30), ph:p?p.ph:+(6+r()*1.4).toFixed(1), ec:Math.round((p?p.ec:1.5)*1000), sal:Math.round((p?p.ec:1.5)*640), n:Math.round(40+r()*160), pP:Math.round(15+r()*90), k:Math.round(60+r()*220), batt:(3.4+r()*0.3).toFixed(2), rssi:-(60+Math.floor(r()*40)) }; }
+  function openSensor(h,sid){ const sn=h.sensors.find(s=>s.id===sid); if(!sn) return; const d=soilReadings(h,sn), sd=sn.c*100+sn.r;
     drawer.innerHTML=`
       <div class="drawer-head"><div><div class="id">${h.name} · crossing ${sn.c},${sn.r}</div><h3 id="drawer-title">✚ Soil sensor ${sn.id}</h3></div><button class="x" aria-label="Close">✕</button></div>
-      <div class="drawer-body">
-        <div class="influx"><span>◷</span> XZ-DSF3 LoRa soil probe · sample series shown, will stream from InfluxDB once connected.</div>
+      <div class="drawer-body"><div class="influx"><span>◷</span> XZ-DSF3 LoRa soil probe · sample series shown, will stream from InfluxDB once connected.</div>
         <div class="lane-label" style="margin-bottom:8px">Current readings — all 8 soil elements</div>
         <div class="pgrid" style="margin-bottom:16px">
-          <div class="ptile"><div class="k">Soil temp</div><div class="v">${d.temp}<small>°C</small></div></div>
-          <div class="ptile"><div class="k">Moisture</div><div class="v">${d.moist}<small>%</small></div></div>
-          <div class="ptile"><div class="k">pH</div><div class="v">${d.ph}</div></div>
-          <div class="ptile"><div class="k">EC</div><div class="v">${d.ec}<small>µS/cm</small></div></div>
-          <div class="ptile"><div class="k">Salinity</div><div class="v">${d.sal}<small>mg/L</small></div></div>
-          <div class="ptile"><div class="k">Nitrogen</div><div class="v">${d.n}<small>mg/kg</small></div></div>
-          <div class="ptile"><div class="k">Phosphorus</div><div class="v">${d.pP}<small>mg/kg</small></div></div>
-          <div class="ptile"><div class="k">Potassium</div><div class="v">${d.k}<small>mg/kg</small></div></div>
-        </div>
+          <div class="ptile"><div class="k">Soil temp</div><div class="v">${d.temp}<small>°C</small></div></div><div class="ptile"><div class="k">Moisture</div><div class="v">${d.moist}<small>%</small></div></div><div class="ptile"><div class="k">pH</div><div class="v">${d.ph}</div></div><div class="ptile"><div class="k">EC</div><div class="v">${d.ec}<small>µS/cm</small></div></div><div class="ptile"><div class="k">Salinity</div><div class="v">${d.sal}<small>mg/L</small></div></div>
+          <div class="ptile"><div class="k">Nitrogen</div><div class="v">${d.n}<small>mg/kg</small></div></div><div class="ptile"><div class="k">Phosphorus</div><div class="v">${d.pP}<small>mg/kg</small></div></div><div class="ptile"><div class="k">Potassium</div><div class="v">${d.k}<small>mg/kg</small></div></div></div>
         <div class="lane-label" style="margin-bottom:8px">24-hour progression</div>
-        ${tsChart(sd+11,"#3E82B5","Soil moisture","%",d.moist,14)}
-        ${tsChart(sd+22,"#D6482B","Soil temperature","°C",d.temp,4,1)}
-        ${tsChart(sd+33,"#C77D3A","Soil pH","pH",d.ph,0.5,1)}
-        ${tsChart(sd+44,"#7B6FB0","EC","µS/cm",d.ec,220)}
+        ${tsChart(sd+11,"#3E82B5","Soil moisture","%",d.moist,14)}${tsChart(sd+22,"#D6482B","Soil temperature","°C",d.temp,4,1)}${tsChart(sd+33,"#C77D3A","Soil pH","pH",d.ph,0.5,1)}${tsChart(sd+44,"#7B6FB0","EC","µS/cm",d.ec,220)}
         ${tsChartMulti("NPK (mg/kg)",[{seed:sd+51,color:"#2E6B43",label:"N",unit:"",base:d.n,amp:30},{seed:sd+52,color:"#B08A2E",label:"P",unit:"",base:d.pP,amp:20},{seed:sd+53,color:"#D6482B",label:"K",unit:"",base:d.k,amp:40}])}
-        <p class="picker-note" style="margin-top:4px">Device: battery ${d.batt} V · RSSI ${d.rssi} dBm · nearest bed <b>${d.bed?d.bed.id:"—"}</b>${d.bed&&d.bed.crop?` (${CROPS[d.bed.crop].name})`:""}.</p>
-      </div>
+        <p class="picker-note" style="margin-top:4px">Device: battery ${d.batt} V · RSSI ${d.rssi} dBm · nearest bed <b>${d.bed?d.bed.id:"—"}</b>${d.bed&&d.bed.crop?` (${CROPS[d.bed.crop].name})`:""}.</p></div>
       <div class="drawer-foot"><button class="btn danger" id="rmSensor">Remove sensor</button><button class="btn primary" data-close>Done</button></div>`;
     wireClose(); openDrawer();
     document.getElementById("rmSensor").onclick=()=>{const i=h.sensors.findIndex(s=>s.id===sid); if(i>=0)h.sensors.splice(i,1); toast("Removed "+sid); renderHouse(); closeDrawer();};
   }
-
   function openClimate(h){
-    drawer.innerHTML=`
-      <div class="drawer-head"><div><div class="id">${h.name}</div><h3 id="drawer-title">Greenhouse climate</h3></div><button class="x" aria-label="Close">✕</button></div>
-      <div class="drawer-body">
-        <div class="influx"><span>◷</span> Zone air temperature &amp; humidity sensors — one per arch. Sample series; live from the greenhouse controller / InfluxDB later.</div>
-        ${h.zones.map(z=>`
-          <div class="lane-label" style="margin-bottom:6px">Zone ${z.z} · Arch ${ARCHES[z.z-1]}</div>
-          ${tsChartMulti(`Zone ${z.z} — temp / humidity`,[{seed:h.id*70+z.z*11+1,color:"var(--temp)",label:"Temp",unit:"°C",base:z.temp,amp:3,dp:1},{seed:h.id*70+z.z*11+5,color:"var(--humid)",label:"Humidity",unit:"%",base:z.humid,amp:8,dp:0}])}
-        `).join("")}
-      </div>
+    drawer.innerHTML=`<div class="drawer-head"><div><div class="id">${h.name}</div><h3 id="drawer-title">Greenhouse climate</h3></div><button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body"><div class="influx"><span>◷</span> Zone air temperature &amp; humidity sensors — one per arch. Sample series; live from the greenhouse controller / InfluxDB later.</div>
+      ${h.zones.map(z=>`<div class="lane-label" style="margin-bottom:6px">Zone ${z.z} · Arch ${ARCHES[z.z-1]}</div>${tsChartMulti(`Zone ${z.z} — temp / humidity`,[{seed:h.id*70+z.z*11+1,color:"var(--temp)",label:"Temp",unit:"°C",base:z.temp,amp:3,dp:1},{seed:h.id*70+z.z*11+5,color:"var(--humid)",label:"Humidity",unit:"%",base:z.humid,amp:8,dp:0}])}`).join("")}</div>
       <div class="drawer-foot"><button class="btn primary" data-close>Done</button></div>`;
     wireClose(); openDrawer();
   }
-  function openWeather(){
-    const W=WEATHER;
-    drawer.innerHTML=`
-      <div class="drawer-head"><div><div class="id">Farm · 1 station</div><h3 id="drawer-title">⛅ Weather station</h3></div><button class="x" aria-label="Close">✕</button></div>
-      <div class="drawer-body">
-        <div class="influx"><span>◷</span> ${W.name} · sample series shown, live from the station / InfluxDB later.</div>
+  function openWeather(){ const W=WEATHER;
+    drawer.innerHTML=`<div class="drawer-head"><div><div class="id">Farm · 1 station</div><h3 id="drawer-title">⛅ Weather station</h3></div><button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body"><div class="influx"><span>◷</span> ${W.name} · sample series shown, live from the station / InfluxDB later.</div>
         <div class="lane-label" style="margin-bottom:8px">Current conditions</div>
-        <div class="pgrid" style="margin-bottom:16px">
-          <div class="ptile"><div class="k">Outdoor temp</div><div class="v">${W.outTemp}<small>°C</small></div></div>
-          <div class="ptile"><div class="k">Outdoor humid</div><div class="v">${W.outHumid}<small>%</small></div></div>
-          <div class="ptile"><div class="k">Wind speed</div><div class="v">${W.windSpd}<small>km/h</small></div></div>
-          <div class="ptile"><div class="k">Wind dir</div><div class="v">${W.windDir}<small>°</small></div></div>
-          <div class="ptile"><div class="k">Solar</div><div class="v">${W.solar}<small>lux</small></div></div>
-          <div class="ptile"><div class="k">UV index</div><div class="v">${W.uv}</div></div>
-          <div class="ptile"><div class="k">Pressure</div><div class="v">${W.pressure}<small>hPa</small></div></div>
-          <div class="ptile"><div class="k">Rainfall</div><div class="v">${W.rain}<small>mm</small></div></div>
-        </div>
+        <div class="pgrid" style="margin-bottom:16px"><div class="ptile"><div class="k">Outdoor temp</div><div class="v">${W.outTemp}<small>°C</small></div></div><div class="ptile"><div class="k">Outdoor humid</div><div class="v">${W.outHumid}<small>%</small></div></div><div class="ptile"><div class="k">Wind speed</div><div class="v">${W.windSpd}<small>km/h</small></div></div><div class="ptile"><div class="k">Wind dir</div><div class="v">${W.windDir}<small>°</small></div></div><div class="ptile"><div class="k">Solar</div><div class="v">${W.solar}<small>lux</small></div></div><div class="ptile"><div class="k">UV index</div><div class="v">${W.uv}</div></div><div class="ptile"><div class="k">Pressure</div><div class="v">${W.pressure}<small>hPa</small></div></div><div class="ptile"><div class="k">Rainfall</div><div class="v">${W.rain}<small>mm</small></div></div></div>
         <div class="lane-label" style="margin-bottom:8px">24-hour progression</div>
         ${tsChartMulti("Outdoor temp / humidity",[{seed:9101,color:"var(--temp)",label:"Temp",unit:"°C",base:W.outTemp,amp:4,dp:1},{seed:9102,color:"var(--humid)",label:"Humidity",unit:"%",base:W.outHumid,amp:8}])}
-        ${tsChart(9103,"#00BCD4","Barometric pressure","hPa",W.pressure,3,1)}
-        ${tsChart(9104,"#4EA23C","Wind speed","km/h",W.windSpd,2,1)}
-      </div>
+        ${tsChart(9103,"#00BCD4","Barometric pressure","hPa",W.pressure,3,1)}${tsChart(9104,"#4EA23C","Wind speed","km/h",W.windSpd,2,1)}</div>
       <div class="drawer-foot"><button class="btn primary" data-close>Done</button></div>`;
     wireClose(); openDrawer();
   }
-
   function openInspection(h){
-    drawer.innerHTML=`
-      <div class="drawer-head"><div><div class="id">${h.name}</div><h3 id="drawer-title">Log inspection</h3></div><button class="x" aria-label="Close">✕</button></div>
-      <div class="drawer-body">
-        <div class="field"><label>Inspector</label><input id="insBy" placeholder="Name of farm operator"></div>
+    drawer.innerHTML=`<div class="drawer-head"><div><div class="id">${h.name}</div><h3 id="drawer-title">Log inspection</h3></div><button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body"><div class="field"><label>Inspector</label><input id="insBy" placeholder="Name of farm operator"></div>
         <div class="field"><label>Area</label><input id="insArea" value="Whole house"></div>
         <div class="field"><label>Status</label><select id="insStatus"><option value="ok">OK — healthy</option><option value="pest">Pest observed</option><option value="damage">Damage found</option></select></div>
         <div class="field"><label>Notes</label><textarea id="insNotes" placeholder="Observations…"></textarea></div>
-        <p class="picker-note">For patch-level damage, close this and click a bed in the grid (Inspect tool).</p>
-      </div>
+        <p class="picker-note">For patch-level damage, close this and click a patch in the grid (Inspect tool).</p></div>
       <div class="drawer-foot"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="saveInsp">Save inspection</button></div>`;
     wireClose(); openDrawer();
-    document.getElementById("saveInsp").onclick=()=>{
-      h.inspections.push({id:"I"+(++h.inspSeq), at:NOW, by:document.getElementById("insBy").value.trim()||"Unspecified", area:document.getElementById("insArea").value.trim()||"Whole house", status:document.getElementById("insStatus").value, notes:document.getElementById("insNotes").value.trim()});
-      toast("Inspection logged"); renderHouse(); closeDrawer();
-    };
+    document.getElementById("saveInsp").onclick=()=>{ h.inspections.push({id:"I"+(++h.inspSeq), at:NOW, by:document.getElementById("insBy").value.trim()||"Unspecified", area:document.getElementById("insArea").value.trim()||"Whole house", status:document.getElementById("insStatus").value, notes:document.getElementById("insNotes").value.trim()}); toast("Inspection logged"); renderHouse(); closeDrawer(); };
   }
-  let dmgStart=0, dmgLen=3;
-  function openDamage(h,b){
+  let dmgLen=3, dmgW=1;
+  function openDamage(h,b,startRow){
     if(!b.crop){ toast("Bed "+b.id+" is empty — nothing to inspect"); return; }
-    dmgStart=0; dmgLen=3;
-    const draw=()=>{
-      const lane=document.getElementById("dlane");
-      drawer.querySelector("#dlen").textContent=`P${String(dmgStart+1).padStart(2,'0')}–P${String(Math.min(dmgStart+dmgLen,PATCHES_PER_BED)).padStart(2,'0')} (${Math.min(dmgLen,PATCHES_PER_BED-dmgStart)})`;
-      lane.querySelectorAll(".pcell").forEach((el,i)=>el.classList.toggle("sel", i>=dmgStart && i<dmgStart+dmgLen));
-    };
+    dmgLen=3; dmgW=1; const startCol=h.beds.indexOf(b);
+    const draw=()=>{ drawer.querySelector("#dsel").textContent=`${b.id} P${String(startRow+1).padStart(2,'0')}–P${String(Math.min(startRow+dmgLen,PATCHES_PER_BED)).padStart(2,'0')} × ${dmgW} bed(s)`; };
     drawer.innerHTML=`
-      <div class="drawer-head"><div><div class="id">${h.name} · Bed ${b.id}</div><h3 id="drawer-title">Report pest / damage</h3></div><button class="x" aria-label="Close">✕</button></div>
-      <div class="drawer-body">
-        <p class="picker-note">Click a patch to set the start of the affected section, adjust its length, then mark ✕ &amp; remove the plants there.</p>
-        <div class="lane-label">${CROPS[b.crop].name} · click a patch to start</div>
-        <div class="lane-wrap"><div class="lane-scroll" style="padding-top:6px"><div class="lane" id="dlane">${laneHTML([b],PATCHES_PER_BED)}</div></div></div>
-        <div class="field" style="margin-top:14px"><label>Affected section</label>
-          <div class="stepper"><button id="decL">–</button><span class="val" id="dlen"></span><button id="incL">+</button></div></div>
+      <div class="drawer-head"><div><div class="id">${h.name} · ${b.id}-P${String(startRow+1).padStart(2,'0')}</div><h3 id="drawer-title">Report pest / damage</h3></div><button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body"><p class="picker-note">Mark a section starting at this patch as damaged (✕) and remove its plants. The section is shown on the grid once applied.</p>
+        <div class="field"><label>Affected section</label><div class="lane-label" id="dsel" style="margin-bottom:8px"></div>
+          <div style="display:flex;gap:22px;flex-wrap:wrap">
+            <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Patches (length)</div><div class="stepper"><button id="decL">–</button><span class="val" style="min-width:44px">${dmgLen}</span><button id="incL">+</button></div></div>
+            <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Beds (width)</div><div class="stepper"><button id="decW">–</button><span class="val" style="min-width:44px">${dmgW}</span><button id="incW">+</button></div></div>
+          </div></div>
         <div class="field"><label>Issue</label><select id="dmgStatus"><option value="pest">Pest infestation</option><option value="damage">Physical / disease damage</option></select></div>
-        <div class="field"><label>Notes</label><textarea id="dmgNotes" placeholder="What was found…"></textarea></div>
-      </div>
+        <div class="field"><label>Notes</label><textarea id="dmgNotes" placeholder="What was found…"></textarea></div></div>
       <div class="drawer-foot"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="applyDmg" style="background:var(--danger)">Mark ✕ &amp; remove plants</button></div>`;
     wireClose(); openDrawer(); draw();
-    drawer.querySelectorAll("#dlane .pcell").forEach((el,i)=>el.onclick=()=>{dmgStart=i; if(dmgStart+dmgLen>PATCHES_PER_BED) dmgLen=PATCHES_PER_BED-dmgStart; draw();});
-    document.getElementById("decL").onclick=()=>{dmgLen=Math.max(1,dmgLen-1); draw();};
-    document.getElementById("incL").onclick=()=>{dmgLen=Math.min(PATCHES_PER_BED-dmgStart,dmgLen+1); draw();};
-    document.getElementById("applyDmg").onclick=()=>{
-      let n=0; for(let i=dmgStart;i<dmgStart+dmgLen && i<PATCHES_PER_BED;i++){ if(!b.patches[i].damaged){b.patches[i].damaged=true; n++;} }
-      const status=document.getElementById("dmgStatus").value, notes=document.getElementById("dmgNotes").value.trim();
-      h.inspections.push({id:"I"+(++h.inspSeq), at:NOW, by:"Field report", area:`${b.id} P${dmgStart+1}–P${Math.min(dmgStart+dmgLen,PATCHES_PER_BED)}`, status, notes:notes||`${n} patch(es) removed`});
+    const upd=id=>document.getElementById(id);
+    upd("decL").onclick=()=>{dmgLen=Math.max(1,dmgLen-1);upd("decL").parentElement.querySelector(".val").textContent=dmgLen;draw();};
+    upd("incL").onclick=()=>{dmgLen=Math.min(PATCHES_PER_BED-startRow,dmgLen+1);upd("incL").parentElement.querySelector(".val").textContent=dmgLen;draw();};
+    upd("decW").onclick=()=>{dmgW=Math.max(1,dmgW-1);upd("decW").parentElement.querySelector(".val").textContent=dmgW;draw();};
+    upd("incW").onclick=()=>{dmgW=Math.min(3,dmgW+1);upd("incW").parentElement.querySelector(".val").textContent=dmgW;draw();};
+    upd("applyDmg").onclick=()=>{ let n=0;
+      for(let dc=0;dc<dmgW;dc++){ const bed=h.beds[startCol+dc]; if(!bed||!bed.crop) continue;
+        for(let i=startRow;i<startRow+dmgLen && i<PATCHES_PER_BED;i++){ if(!bed.patches[i].damaged){bed.patches[i].damaged=true; n++;} } }
+      const status=upd("dmgStatus").value, notes=upd("dmgNotes").value.trim();
+      h.inspections.push({id:"I"+(++h.inspSeq), at:NOW, by:"Field report", area:`${b.id} P${startRow+1}–P${Math.min(startRow+dmgLen,PATCHES_PER_BED)} ×${dmgW}`, status, notes:notes||`${n} patch(es) removed`});
       toast(`Marked ${n} patch(es) as ${status} & removed plants`); renderHouse(); closeDrawer();
     };
   }
