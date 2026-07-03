@@ -6,6 +6,7 @@
     --ink:#1A231C; --muted:#6C7568; --muted-2:#8E9587;
     --green:#1F5C3D; --green-lo:#2E7A50; --green-hi:#E7F0E5;
     --ph-acid:#C77D3A; --ph-ideal:#4C9A5A; --ph-alk:#7B6FB0; --moist:#3E82B5;
+    --danger:#B4462F;
     --radius:14px; --shadow:0 1px 2px rgba(26,35,28,.06), 0 8px 24px rgba(26,35,28,.06);
     --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -13,184 +14,140 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;overflow-x:hidden}
-  body{
-    font-family:var(--sans); color:var(--ink); background:var(--sand);
-    line-height:1.5; -webkit-font-smoothing:antialiased;
-  }
+  body{font-family:var(--sans); color:var(--ink); background:var(--sand); line-height:1.5; -webkit-font-smoothing:antialiased}
   h1,h2,h3{text-wrap:balance; margin:0}
   button{font:inherit; color:inherit; cursor:pointer; border:none; background:none}
   .tnum{font-variant-numeric:tabular-nums}
 
-  /* ---- header ---- */
-  header{
-    position:sticky; top:0; z-index:30;
-    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
-    padding:14px clamp(16px,4vw,40px);
-    background:rgba(251,250,246,.86); backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
+  header{position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    padding:14px clamp(16px,4vw,40px); background:rgba(251,250,246,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
   .brand{display:flex; align-items:center; gap:12px}
-  .brand .mark{
-    width:38px; height:38px; border-radius:11px; flex:none;
-    background:linear-gradient(150deg,var(--green),var(--green-lo));
-    display:grid; place-items:center; color:#EAF3E7; box-shadow:var(--shadow);
-  }
+  .brand .mark{width:38px; height:38px; border-radius:11px; flex:none; background:linear-gradient(150deg,var(--green),var(--green-lo));
+    display:grid; place-items:center; color:#EAF3E7; box-shadow:var(--shadow)}
   .brand h1{font-family:var(--serif); font-size:19px; font-weight:600; letter-spacing:.1px}
   .brand p{margin:0; font-size:11.5px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
-
   nav.crumb{display:flex; align-items:center; gap:6px; font-size:13.5px; flex-wrap:wrap; margin-left:auto}
   nav.crumb button{color:var(--muted); padding:4px 8px; border-radius:8px}
   nav.crumb button:hover{background:var(--sand-dk); color:var(--ink)}
   nav.crumb .cur{color:var(--ink); font-weight:600}
   nav.crumb .sep{color:var(--muted-2); font-size:12px}
 
-  main{padding:clamp(18px,4vw,40px); max-width:1180px; margin:0 auto}
+  main{padding:clamp(18px,4vw,40px); max-width:1240px; margin:0 auto}
   .view{animation:fade .35s ease}
   @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
   @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
-
   .eyebrow{font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--green-lo); font-weight:600}
-  .lede{color:var(--muted); font-size:14.5px; max-width:62ch; margin:6px 0 0}
+  .lede{color:var(--muted); font-size:14.5px; max-width:64ch; margin:6px 0 0}
   .view-head{margin-bottom:22px}
   .view-head h2{font-family:var(--serif); font-size:clamp(23px,3.6vw,32px); font-weight:600; margin-top:5px}
 
-  /* ---- farm / site plan ---- */
-  .site{
-    position:relative; border-radius:var(--radius); overflow:hidden;
+  .site{position:relative; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--sand-dk);
+    padding:clamp(30px,6vw,64px);
     background:
-      radial-gradient(120px 120px at 12% 88%, rgba(62,130,181,.0), transparent),
-      repeating-linear-gradient(46deg, rgba(0,0,0,.015) 0 22px, transparent 22px 44px),
-      linear-gradient(160deg,#E4D8C0,#D8C8A9);
-    box-shadow:var(--shadow); border:1px solid var(--sand-dk);
-    padding:clamp(26px,5vw,54px);
+      repeating-linear-gradient(38deg, rgba(150,120,80,.05) 0 30px, transparent 30px 62px),
+      repeating-linear-gradient(-52deg, rgba(120,90,55,.04) 0 26px, transparent 26px 60px),
+      radial-gradient(140% 120% at 30% 20%, #E7DBC2, #D3C09E);
   }
-  .palm-row{position:absolute; left:0; right:0; display:flex; justify-content:space-around; pointer-events:none}
-  .palm-row.top{top:9px} .palm-row.bot{bottom:9px}
-  .palm-col{position:absolute; top:0; bottom:0; display:flex; flex-direction:column; justify-content:space-around; pointer-events:none}
-  .palm-col.l{left:9px} .palm-col.r{right:9px}
-  .palm{width:15px; height:15px; border-radius:50%;
-    background:radial-gradient(circle at 40% 35%, #6c8f52, #3f5f34 70%);
-    box-shadow:0 0 0 2px rgba(216,200,169,.5); opacity:.9}
-  .houses{
-    position:relative; z-index:2;
-    display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(16px,3vw,30px);
-    max-width:760px; margin:0 auto;
-  }
-  .ghouse{
-    text-align:left; border-radius:12px; overflow:hidden;
-    background:var(--card); border:1px solid var(--sand-dk);
-    box-shadow:var(--shadow); transition:transform .18s ease, box-shadow .18s ease;
-  }
-  .ghouse:hover,.ghouse:focus-visible{transform:translateY(-4px); box-shadow:0 14px 34px rgba(26,35,28,.16); outline:none}
-  .ghouse:focus-visible{outline:2px solid var(--green); outline-offset:2px}
-  .roof{
-    height:104px; position:relative; display:flex; gap:5px; padding:12px 14px 0;
-    background:linear-gradient(180deg,#e8efe5,#d7e0d4); border-bottom:1px solid var(--sand-dk); overflow:hidden;
-  }
-  .rarch{flex:1; align-self:stretch; border-radius:46% 46% 3px 3px / 82% 82% 3px 3px;
+  .site::before{content:""; position:absolute; left:8%; right:8%; bottom:18px; height:3px; border-radius:3px;
+    background:repeating-linear-gradient(90deg, rgba(120,95,60,.35) 0 14px, transparent 14px 26px)}
+  .palm-edge{position:absolute; display:flex; gap:2.4%; pointer-events:none}
+  .palm-edge.top{top:10px; left:4%; right:4%} .palm-edge.bot{bottom:12px; left:4%; right:4%}
+  .palm-edge.mid{top:6%; bottom:8%; left:50%; transform:translateX(-50%); flex-direction:column; gap:10px; justify-content:space-between}
+  .palm{width:16px; height:16px; border-radius:50%; flex:1;
+    background:radial-gradient(circle at 40% 34%, #6f9152, #3c5a32 72%); box-shadow:0 0 0 2px rgba(211,192,158,.45)}
+  .palm-edge.mid .palm{width:14px; height:14px; flex:none}
+  .houses{position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; gap:clamp(10px,2.2vw,22px); max-width:820px; margin:0 auto}
+  .ghouse{position:relative; text-align:left; border-radius:6px; overflow:hidden; padding:0; border:1px solid #b9ae93;
+    box-shadow:var(--shadow); transition:transform .3s ease, opacity .3s ease; transform-origin:center}
+  .ghouse .roofsat{height:clamp(150px,20vw,210px); position:relative;
     background:
-      repeating-linear-gradient(90deg, rgba(118,138,118,.30) 0 1.5px, transparent 1.5px 9px),
-      linear-gradient(180deg,#f6f8f3,#e0e8dd);
-    border:1px solid rgba(118,138,118,.34); border-bottom:none;}
-  .roof::after{content:""; position:absolute; inset:0; pointer-events:none;
-    background:linear-gradient(105deg, rgba(255,255,255,.45), transparent 55%)}
-  .ghouse .meta{padding:13px 15px 15px}
+      repeating-linear-gradient(0deg, rgba(90,105,95,.16) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(90deg, rgba(90,110,95,.10) 0 1px, transparent 1px 46px),
+      linear-gradient(180deg,#eef1ec,#dfe4dc);
+  }
+  .ghouse .roofsat::before{content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(90deg, transparent 0 44px, rgba(70,90,72,.28) 44px 46px)}
+  .ghouse .roofsat::after{content:""; position:absolute; inset:0; background:linear-gradient(115deg, rgba(255,255,255,.4), transparent 60%)}
+  .ghouse .tagpill{position:absolute; left:10px; top:10px; z-index:3; background:rgba(20,26,20,.62); color:#eef3ea;
+    font-size:11px; font-weight:600; letter-spacing:.03em; padding:4px 9px; border-radius:8px; backdrop-filter:blur(3px)}
+  .ghouse .meta{position:absolute; left:0; right:0; bottom:0; z-index:3; padding:10px 12px 11px;
+    background:linear-gradient(0deg, rgba(20,26,20,.72), rgba(20,26,20,.15) 70%, transparent); color:#f2f5ee}
   .ghouse .meta .r1{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
-  .ghouse h3{font-size:16px; font-weight:600}
-  .ghouse .dim{font-size:11.5px; color:var(--muted); letter-spacing:.04em}
-  .ghouse .occ{margin-top:10px}
-  .bar{height:7px; border-radius:99px; background:var(--sand-dk); overflow:hidden}
-  .bar > i{display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--green-lo),#5ca772)}
-  .ghouse .stat{display:flex; justify-content:space-between; margin-top:7px; font-size:12px; color:var(--muted)}
-  .ghouse .stat b{color:var(--ink); font-weight:600}
-  .tank{position:relative; z-index:2; width:78px; height:52px; margin:26px auto 0;
-    border-radius:6px; border:2px solid #7c8a90;
+  .ghouse h3{font-size:15.5px; font-weight:600}
+  .ghouse .dim{font-size:11px; opacity:.85}
+  .ghouse .stat{font-size:11.5px; opacity:.92; margin-top:2px}
+  .ghouse:hover,.ghouse:focus-visible{transform:scale(1.02); outline:none; box-shadow:0 16px 36px rgba(26,35,28,.24)}
+  .ghouse:focus-visible{outline:2px solid var(--green); outline-offset:3px}
+  .ghouse.zoom{transform:scale(1.9); opacity:0; z-index:5}
+  .houses.leaving .ghouse:not(.zoom){opacity:.25}
+  .tank{position:relative; z-index:2; width:96px; height:56px; margin:24px auto 6px; border-radius:5px; border:2px solid #7c8a90;
     background:linear-gradient(160deg,#5f93b3,#3f6f92); box-shadow:var(--shadow)}
-  .tank span{position:absolute; left:50%; bottom:-19px; transform:translateX(-50%); white-space:nowrap;
-    font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+  .tank span{position:absolute; left:50%; bottom:-19px; transform:translateX(-50%); white-space:nowrap; font-size:10.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
 
-  /* ---- house / bed grid ---- */
   .house-wrap{display:grid; grid-template-columns:1fr; gap:20px}
-  .plan-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:clamp(16px,3vw,26px)}
-  .plan-top{display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:16px}
-  .scale-note{font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px}
-  .scale-note .ruler{display:inline-block; width:54px; height:8px; border:1px solid var(--muted-2); border-top:none}
-  .bed-scroll{overflow-x:auto; padding-bottom:6px}
-  .house-plan{
-    position:relative; display:grid; gap:9px; min-width:520px;
-    grid-template-columns:repeat(3, 1fr);
-    padding:16px; border-radius:12px;
-    background:repeating-linear-gradient(0deg, rgba(0,0,0,.02) 0 1px, transparent 1px 30px), var(--sand);
-    border:1px dashed var(--sand-dk);
-  }
-  .dim-w,.dim-l{position:absolute; color:var(--muted-2); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase}
-  .dim-w{top:-15px; left:50%; transform:translateX(-50%)}
-  .dim-l{top:50%; left:-6px; transform:rotate(-90deg) translateX(50%); transform-origin:left}
-  .bed{
-    position:relative; text-align:left; border-radius:9px; min-height:96px;
-    padding:10px 11px; color:var(--ink);
-    border:1px solid rgba(0,0,0,.08); box-shadow:0 1px 1px rgba(0,0,0,.04);
-    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
-    display:flex; flex-direction:column; gap:4px;
-  }
-  .bed:hover,.bed:focus-visible{transform:translateY(-3px) scale(1.012); box-shadow:0 10px 22px rgba(26,35,28,.14); outline:none; z-index:2}
-  .bed:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
-  .bed .id{font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.06em; opacity:.75}
-  .bed .crop{font-size:14.5px; font-weight:600; line-height:1.2}
-  .bed .sub{font-size:11px; opacity:.72}
-  .bed.empty{background:repeating-linear-gradient(45deg, #efeadd 0 7px, #e8e2d3 7px 14px); color:var(--muted)}
-  .bed.empty .crop{font-weight:500}
-  .bed .plantbtn{margin-top:auto; font-size:11px; font-weight:600; color:var(--green); display:flex; align-items:center; gap:4px}
-  .bed .leaf{position:absolute; right:9px; top:9px; font-size:15px; opacity:.9}
-  .bed .avgph{position:absolute; right:9px; bottom:9px; font-family:var(--mono); font-size:10.5px; padding:2px 6px; border-radius:6px; background:rgba(255,255,255,.7); font-weight:600}
+  @media(min-width:1000px){.house-wrap{grid-template-columns:1fr 320px}}
+  .plan-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:clamp(16px,3vw,24px)}
+  .toolbar{display:flex; justify-content:space-between; align-items:flex-end; gap:14px 22px; flex-wrap:wrap; margin-bottom:16px}
+  .tgroup{display:flex; flex-direction:column; gap:6px}
+  .tgroup .lbl{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  .seg{display:inline-flex; background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:3px; gap:2px; flex-wrap:wrap}
+  .seg button{padding:7px 13px; border-radius:8px; font-size:12.5px; font-weight:600; color:var(--muted); transition:.12s; display:flex; align-items:center; gap:6px}
+  .seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.09)}
+  .seg button:hover:not(.on){color:var(--ink)}
+  .arch-labels{display:flex; gap:0; min-width:min-content; padding:0 0 0 var(--pad,10px); margin-bottom:2px}
+  .arch-lab{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600}
+  .arch-lab .clr{ text-transform:none; letter-spacing:0; color:var(--danger); font-weight:600; font-size:11.5px; padding:2px 6px; border-radius:6px}
+  .arch-lab .clr:hover{background:#faeae6}
+  .arch-lab span{color:var(--muted-2); font-family:var(--mono); font-size:10px}
 
-  .arch-sec{margin-top:18px}
-  .arch-sec:first-of-type{margin-top:4px}
-  .bed-tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:9px; margin-top:9px}
+  .matrix-scroll{overflow-x:auto; padding:2px 0 8px}
+  .matrixInner{position:relative; width:max-content}
+  .grid{display:grid; grid-auto-flow:column; grid-template-rows:repeat(5,16px); grid-auto-columns:16px; gap:2px 3px; padding:10px;
+    background:repeating-linear-gradient(90deg, transparent 0 16px, rgba(0,0,0,.015) 16px 19px), var(--sand);
+    border:1px solid var(--sand-dk); border-radius:9px}
+  .cell{width:16px; height:16px; border-radius:2px; border:1px solid rgba(0,0,0,.07); position:relative; transition:transform .1s ease}
+  .cell.empty{background:repeating-linear-gradient(45deg,#eee7d7 0 3px,#e0d8c6 3px 6px)}
+  .cell.dmg{background:repeating-linear-gradient(45deg,#f2ddd6 0 3px,#e9cabf 3px 6px)}
+  .cell.dmg::after{content:""; position:absolute; inset:1px;
+    background:linear-gradient(45deg,transparent 43%,var(--danger) 43% 57%,transparent 57%),linear-gradient(-45deg,transparent 43%,var(--danger) 43% 57%,transparent 57%)}
+  .cell.clickable{cursor:pointer}
+  .cell.clickable:hover{transform:scale(1.4); z-index:6; box-shadow:0 3px 9px rgba(0,0,0,.28); border-color:rgba(255,255,255,.85); border-radius:3px}
+  .archline{position:absolute; top:6px; bottom:6px; width:2px; background:rgba(60,80,60,.28); z-index:5; pointer-events:none}
+  .sensorLayer{position:absolute; inset:0; z-index:7; pointer-events:none}
+  .hotspot{position:absolute; width:13px; height:13px; border-radius:50%; transform:translate(-50%,-50%);
+    background:rgba(31,92,61,.16); border:1px solid rgba(31,92,61,.4); cursor:crosshair; pointer-events:auto; transition:.1s}
+  .hotspot:hover{background:rgba(31,92,61,.45); transform:translate(-50%,-50%) scale(1.5)}
+  .sensor{position:absolute; transform:translate(-50%,-50%); z-index:8; cursor:pointer; pointer-events:auto; color:var(--green)}
+  .sensor svg{display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+  .sensor:hover{color:var(--green-lo)}
+  .axis-note{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:8px; font-size:11.5px; color:var(--muted)}
 
-  /* legends */
-  .legends{display:grid; grid-template-columns:1fr; gap:14px}
-  @media(min-width:760px){.legends{grid-template-columns:1fr 1fr}}
-  .legend{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px}
-  .legend h4{font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 10px}
-  .chips{display:flex; flex-wrap:wrap; gap:8px 14px}
+  .side{display:flex; flex-direction:column; gap:14px}
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px}
+  .panel h4{font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600; margin:0 0 10px; display:flex; justify-content:space-between; align-items:center}
+  .chips{display:flex; flex-wrap:wrap; gap:8px 13px}
   .chip{display:flex; align-items:center; gap:7px; font-size:12.5px}
   .sw{width:13px; height:13px; border-radius:4px; flex:none; border:1px solid rgba(0,0,0,.08)}
   .sw.round{border-radius:50%}
+  .mini-btn{font-size:12px; font-weight:600; color:var(--green); padding:5px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card)}
+  .mini-btn:hover{background:var(--green-hi); border-color:var(--green-lo)}
+  table.log{width:100%; border-collapse:collapse; font-size:12px}
+  table.log th{text-align:left; color:var(--muted); font-weight:600; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; padding:4px 6px; border-bottom:1px solid var(--line)}
+  table.log td{padding:5px 6px; border-bottom:1px solid var(--line); vertical-align:top}
+  .stat-pill{font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:99px; white-space:nowrap}
+  .stat-ok{background:rgba(76,154,90,.16); color:#3c7a48}
+  .stat-pest{background:rgba(199,125,58,.16); color:#a4632b}
+  .stat-dmg{background:rgba(180,70,47,.16); color:var(--danger)}
+  .empty-note{font-size:12.5px; color:var(--muted-2); font-style:italic}
+  .sensor-item{display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--line)}
+  .sensor-item:last-child{border-bottom:none}
+  .sensor-item button{font-size:11.5px; font-weight:600; color:var(--green)}
 
-  /* ---- house matrix (300 patches) ---- */
-  .seg{display:inline-flex; background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:3px; gap:2px}
-  .seg button{padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:600; color:var(--muted); transition:.12s}
-  .seg button.on{background:var(--card); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.09)}
-  .seg button:hover:not(.on){color:var(--ink)}
-  .matrix-scroll{overflow-x:auto; padding:4px 0 10px}
-  .matrix{display:flex; gap:26px; min-width:min-content; padding:6px 6px 4px; align-items:flex-start}
-  .arch{display:flex; flex-direction:column; gap:0}
-  .arch-h{font-size:11px; letter-spacing:.11em; text-transform:uppercase; color:var(--muted); font-weight:600; display:flex; gap:8px; align-items:baseline; margin-bottom:7px}
-  .arch-h span{font-size:10px; letter-spacing:.03em; color:var(--muted-2); text-transform:none; font-family:var(--mono)}
-  .arch-cap{height:13px; border-radius:60% 60% 0 0 / 100% 100% 0 0;
-    background:linear-gradient(180deg,#eef2ea,#dae3d7); border:1px solid var(--sand-dk); border-bottom:none; margin:0 6px -1px}
-  .arch-grid{display:flex; gap:3px; padding:9px 6px 7px; background:var(--sand); border:1px solid var(--sand-dk); border-radius:0 0 7px 7px}
-  .bedcol{display:flex; flex-direction:column; gap:2px; cursor:pointer; padding:2px; border-radius:4px; transition:background .12s}
-  .bedcol:hover{background:rgba(31,92,61,.14)}
-  .bedcol:focus-visible{outline:2px solid var(--ink); outline-offset:1px}
-  .cell{width:15px; height:15px; border-radius:2px; border:1px solid rgba(0,0,0,.08); transition:transform .1s ease}
-  .cell.empty{background:repeating-linear-gradient(45deg,#eee7d7 0 3px,#e0d8c6 3px 6px)}
-  .cell[data-p]{cursor:pointer}
-  .cell[data-p]:hover,.cell[data-p]:focus-visible{transform:scale(1.45); position:relative; z-index:4; box-shadow:0 3px 9px rgba(0,0,0,.28); outline:none; border-color:rgba(255,255,255,.8)}
-  .axis-note{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:6px; font-size:11.5px; color:var(--muted)}
-  .axis-note .pk{display:flex; gap:5px; align-items:center}
-  .moist-scale{display:inline-block; width:80px; height:11px; border-radius:4px; background:linear-gradient(90deg,#cfe2f0,#2f6d9e); border:1px solid rgba(0,0,0,.1)}
-
-  /* ---- drawer ---- */
   .scrim{position:fixed; inset:0; background:rgba(26,35,28,.34); opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:40}
   .scrim.on{opacity:1; pointer-events:auto}
-  .drawer{
-    position:fixed; top:0; right:0; height:100%; width:min(560px,94vw); z-index:50;
-    background:var(--card); box-shadow:-14px 0 40px rgba(26,35,28,.2);
-    transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.15,1);
-    display:flex; flex-direction:column;
-  }
+  .drawer{position:fixed; top:0; right:0; height:100%; width:min(520px,94vw); z-index:50; background:var(--card);
+    box-shadow:-14px 0 40px rgba(26,35,28,.2); transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.15,1); display:flex; flex-direction:column}
   .drawer.on{transform:none}
   .drawer-head{padding:18px 20px; border-bottom:1px solid var(--line); display:flex; align-items:flex-start; gap:12px}
   .drawer-head .id{font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.08em}
@@ -198,76 +155,55 @@
   .drawer-head .x{margin-left:auto; width:34px; height:34px; border-radius:9px; display:grid; place-items:center; color:var(--muted); flex:none}
   .drawer-head .x:hover{background:var(--sand-dk); color:var(--ink)}
   .drawer-body{padding:20px; overflow-y:auto; flex:1}
-
-  /* crop picker */
+  .drawer-foot{padding:16px 20px; border-top:1px solid var(--line); display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .btn{padding:11px 18px; border-radius:10px; font-size:14px; font-weight:600; transition:.15s}
+  .btn.primary{background:var(--green); color:#fff} .btn.primary:hover{background:var(--green-lo)}
+  .btn.primary:disabled{background:var(--sand-dk); color:var(--muted-2); cursor:not-allowed}
+  .btn.ghost{color:var(--muted)} .btn.ghost:hover{color:var(--ink)}
+  .btn.danger{color:var(--danger); margin-right:auto} .btn.danger:hover{background:#faeae6}
   .picker-note{font-size:13px; color:var(--muted); margin:0 0 16px}
   .crop-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:11px}
   @media(min-width:460px){.crop-grid{grid-template-columns:repeat(3,1fr)}}
-  .crop-opt{text-align:left; border:1.5px solid var(--line); border-radius:12px; padding:12px; background:#fff; transition:.15s; display:flex; flex-direction:column; gap:6px}
+  .crop-opt{text-align:left; border:1.5px solid var(--line); border-radius:12px; padding:12px; background:#fff; transition:.15s; display:flex; flex-direction:column; gap:5px}
   .crop-opt:hover{border-color:var(--green-lo); transform:translateY(-2px)}
   .crop-opt.sel{border-color:var(--green); box-shadow:0 0 0 3px var(--green-hi)}
   .crop-opt .dot{width:22px; height:22px; border-radius:7px}
   .crop-opt .nm{font-size:14px; font-weight:600}
   .crop-opt .lat{font-size:11px; color:var(--muted); font-style:italic}
-  .drawer-foot{padding:16px 20px; border-top:1px solid var(--line); display:flex; gap:10px; align-items:center}
-  .btn{padding:11px 18px; border-radius:10px; font-size:14px; font-weight:600; transition:.15s}
-  .btn.primary{background:var(--green); color:#fff}
-  .btn.primary:hover{background:var(--green-lo)}
-  .btn.primary:disabled{background:var(--sand-dk); color:var(--muted-2); cursor:not-allowed}
-  .btn.ghost{color:var(--muted)} .btn.ghost:hover{color:var(--ink)}
-  .btn.danger{color:#B4462F; margin-right:auto} .btn.danger:hover{background:#faeae6}
-
-  /* patch grid in drawer */
-  .patch-summary{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
-  .kpi{flex:1; min-width:96px; background:var(--sand); border:1px solid var(--line); border-radius:10px; padding:10px 12px}
-  .kpi .k{font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
-  .kpi .v{font-family:var(--mono); font-size:18px; font-weight:600; margin-top:2px}
-  .kpi .v small{font-size:11px; color:var(--muted); font-weight:500}
-  .patch-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(52px,1fr)); gap:7px}
-  .patch{position:relative; aspect-ratio:1; border-radius:9px; overflow:hidden; border:1px solid rgba(0,0,0,.1); transition:.15s; padding:0}
-  .patch:hover,.patch:focus-visible{transform:scale(1.05); box-shadow:0 6px 16px rgba(26,35,28,.18); outline:none; z-index:2}
-  .patch:focus-visible{outline:2px solid var(--ink); outline-offset:1px}
-  .patch svg{display:block; width:100%; height:100%}
-  .patch .pid{position:absolute; top:3px; left:4px; font-family:var(--mono); font-size:8.5px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.6)}
-  .patch .ph{position:absolute; bottom:3px; right:3px; font-family:var(--mono); font-size:9px; font-weight:700; color:#fff; padding:1px 4px; border-radius:5px; text-shadow:0 1px 1px rgba(0,0,0,.4)}
-
-  /* patch detail */
-  .pd-photo{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow)}
-  .pd-photo svg{display:block; width:100%; height:auto}
-  .pd-stamp{position:absolute; left:10px; bottom:10px; background:rgba(20,26,20,.66); color:#eaf3e7; font-family:var(--mono); font-size:11px; padding:4px 9px; border-radius:7px; backdrop-filter:blur(3px)}
-  .pd-cam{position:absolute; right:10px; top:10px; background:rgba(20,26,20,.55); color:#eaf3e7; font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:7px}
-  .readouts{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-top:16px}
-  .ro{background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:13px 14px; position:relative}
-  .ro .k{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:6px}
-  .ro .v{font-family:var(--mono); font-size:26px; font-weight:600; margin-top:5px; line-height:1}
-  .ro .v small{font-size:12px; color:var(--muted); font-weight:500; margin-left:2px}
-  .ro .tag{font-size:11px; font-weight:600; margin-top:6px; display:inline-block; padding:2px 8px; border-radius:99px}
-  .dotk{width:9px; height:9px; border-radius:50%}
-  .meter{height:6px; border-radius:99px; background:var(--sand-dk); margin-top:9px; overflow:hidden}
-  .meter > i{display:block; height:100%; border-radius:99px}
-  .updated{font-size:12px; color:var(--muted); margin-top:16px; display:flex; align-items:center; gap:7px}
-  .pulse{width:8px; height:8px; border-radius:50%; background:var(--ph-ideal); box-shadow:0 0 0 0 rgba(76,154,90,.5); animation:pulse 2.2s infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(76,154,90,.5)}70%{box-shadow:0 0 0 7px rgba(76,154,90,0)}100%{box-shadow:0 0 0 0 rgba(76,154,90,0)}}
-  .backlink{font-size:13px; color:var(--green); font-weight:600; margin-bottom:14px; display:inline-flex; gap:5px; align-items:center}
-  .toast{position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px); background:var(--ink); color:#eaf3e7; padding:12px 20px; border-radius:11px; font-size:14px; font-weight:500; opacity:0; pointer-events:none; transition:.3s; z-index:60; box-shadow:var(--shadow)}
+  .crop-opt .cyc{font-size:11px; color:var(--muted)}
+  .kpis{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
+  .kpi{flex:1; min-width:120px; background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:11px 13px}
+  .kpi .k{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+  .kpi .v{font-family:var(--mono); font-size:19px; font-weight:600; margin-top:3px} .kpi .v small{font-size:11px; color:var(--muted); font-weight:500}
+  .readouts{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .ro{background:var(--sand); border:1px solid var(--line); border-radius:10px; padding:11px 12px}
+  .ro .k{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+  .ro .v{font-family:var(--mono); font-size:17px; font-weight:600; margin-top:3px} .ro .v small{font-size:11px; color:var(--muted)}
+  .field{margin-bottom:14px}
+  .field label{display:block; font-size:11.5px; font-weight:600; color:var(--muted); letter-spacing:.04em; margin-bottom:5px; text-transform:uppercase}
+  .field input,.field select,.field textarea{width:100%; font:inherit; font-size:14px; padding:9px 11px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink)}
+  .field textarea{resize:vertical; min-height:64px}
+  .size-grid{display:flex; flex-wrap:wrap; gap:7px}
+  .size-opt{padding:8px 12px; border:1.5px solid var(--line); border-radius:9px; font-size:13px; font-weight:600; font-family:var(--mono); background:#fff}
+  .size-opt.sel{border-color:var(--danger); background:#faeae6; color:var(--danger)}
+  .ts-chart{background:var(--sand); border:1px solid var(--line); border-radius:11px; padding:12px 12px 8px; margin-bottom:12px}
+  .ts-chart .th{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:4px}
+  .ts-chart .th b{color:var(--ink); font-family:var(--mono)}
+  .influx{font-size:12px; color:var(--muted); background:var(--green-hi); border:1px solid #cfe0cb; border-radius:9px; padding:9px 11px; display:flex; gap:8px; align-items:center}
+  .toast{position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px); background:var(--ink); color:#eaf3e7; padding:12px 20px;
+    border-radius:11px; font-size:14px; font-weight:500; opacity:0; pointer-events:none; transition:.3s; z-index:60; box-shadow:var(--shadow)}
   .toast.on{opacity:1; transform:translate(-50%,0)}
 </style>
 
 <header>
   <div class="brand">
-    <div class="mark" aria-hidden="true">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 3-10 8-11-1 7-4 10-8 11Z" fill="currentColor"/><path d="M12 21C8 20 5 16 4 9c5 1 8 5 8 12Z" fill="currentColor" opacity=".7"/><path d="M12 21v-9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-    </div>
-    <div>
-      <h1>Al Barari Managed Farm</h1>
-      <p>Planting planner</p>
-    </div>
+    <div class="mark" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 3-10 8-11-1 7-4 10-8 11Z" fill="currentColor"/><path d="M12 21C8 20 5 16 4 9c5 1 8 5 8 12Z" fill="currentColor" opacity=".7"/><path d="M12 21v-9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+    <div><h1>Al Barari Managed Farm</h1><p>Planting planner</p></div>
   </div>
   <nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav>
 </header>
 
 <main id="stage"></main>
-
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawer-title"></aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -275,435 +211,415 @@
 <script>
 (function(){
   "use strict";
-  const TODAY = "2026-07-02";
+  const DAY=86400000, NOW=Date.now();
+  const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const fmtDate=ms=>{const d=new Date(ms); return d.getDate()+" "+MON[d.getMonth()]+" "+d.getFullYear();};
+  const fmtShort=ms=>{const d=new Date(ms); return d.getDate()+" "+MON[d.getMonth()];};
 
-  /* ---------- crop catalog ---------- */
-  const CROPS = {
-    spinach:{name:"Spinach", latin:"Spinacia oleracea", color:"#3E7C47", phLo:6.0, phHi:7.0},
-    rocca:  {name:"Rocca (Arugula)", latin:"Eruca sativa", color:"#7BB04A", phLo:6.0, phHi:7.5},
-    mint:   {name:"Mint", latin:"Mentha spicata", color:"#2E9E7B", phLo:6.0, phHi:7.0},
-    okra:   {name:"Okra", latin:"Abelmoschus esculentus", color:"#B08A2E", phLo:6.5, phHi:7.5},
-    basil:  {name:"Basil", latin:"Ocimum basilicum", color:"#4E9B3A", phLo:6.0, phHi:7.0},
-    thyme:  {name:"Thyme", latin:"Thymus vulgaris", color:"#7E9A5E", phLo:6.0, phHi:8.0},
+  const CROPS={
+    tomato:{name:"Tomato", latin:"Solanum lycopersicum", color:"#D6482B", phLo:5.5, phHi:7.0, cycle:90},
+    capsicum:{name:"Capsicum", latin:"Capsicum annuum", color:"#E7B02E", phLo:5.5, phHi:7.0, cycle:80},
+    cucumber:{name:"Cucumber", latin:"Cucumis sativus", color:"#4EA23C", phLo:5.5, phHi:7.0, cycle:55},
+    okra:{name:"Okra", latin:"Abelmoschus esculentus", color:"#9A8F3A", phLo:6.0, phHi:7.5, cycle:60},
+    spinach:{name:"Spinach", latin:"Spinacia oleracea", color:"#2E6B43", phLo:6.0, phHi:7.0, cycle:45},
   };
-  const EMPTY_COLOR = "#CFC6B5";
+  const CROP_IDS=Object.keys(CROPS);
+  const ARCHES=["A","B","C"], BEDS_PER_ARCH=20, PATCHES_PER_BED=5;
+  const COLS=ARCHES.length*BEDS_PER_ARCH;
+  const CELL=16, GX=3, GY=2, PAD=10;
 
-  /* ---------- deterministic pseudo-random ---------- */
-  function rng(seed){
-    let x = (seed*2654435761 % 2147483647) || 1;
-    return ()=> (x = x*48271 % 2147483647) / 2147483647;
+  function rng(seed){let x=(seed*2654435761%2147483647)||1; return ()=> (x=x*48271%2147483647)/2147483647;}
+  function seedCropFor(hid,arch,col){
+    const e=rng(hid*7919+arch.charCodeAt(0)*131+col*17)();
+    if(e<0.34) return null;
+    const p=rng(hid*104729+arch.charCodeAt(0)*911+col*7)();
+    return CROP_IDS[Math.floor(p*CROP_IDS.length)];
   }
-
-  /* ---------- build the farm (seed data reflects the whiteboard) ---------- */
-  // House = 60 x 50 m, three 20 m net-house arches (A/B/C) side by side.
-  // 20 beds per arch (each bed 1 x 50 m) => 60 beds; 5 patches per bed (1 x 10 m) => 300 patches.
-  const ARCHES = ["A","B","C"];
-  const BEDS_PER_ARCH = 20;
-  const PATCHES_PER_BED = 5;    // 5 monitored 1x1 m patches sampled along the 1x50 m bed => 300/house
-  const CROP_IDS = Object.keys(CROPS);
-
-  // Deterministic seed planting so each house opens with varied, realistic state.
-  function seedCropFor(houseId, arch, col){
-    const empty = rng(houseId*7919 + arch.charCodeAt(0)*131 + col*17)();
-    if(empty < 0.26) return null;                    // ~26% of beds left empty
-    const pick = rng(houseId*104729 + arch.charCodeAt(0)*911 + col*7)();
-    return CROP_IDS[Math.floor(pick*CROP_IDS.length)];
+  function makeBed(hid,arch,col){
+    const id=arch+String(col).padStart(2,"0");
+    const b={id,houseId:hid,arch,col,crop:null,plantedAt:null,harvestAt:null,patches:[]};
+    const c=seedCropFor(hid,arch,col); if(c) plantBed(b,c,true); return b;
   }
-  function makeBed(houseId, arch, col){
-    const id = arch + String(col).padStart(2,"0");
-    const b = {id, houseId, arch, col, crop:null, patches:[]};
-    const seeded = seedCropFor(houseId, arch, col);
-    if(seeded) plantBed(b, seeded);
-    return b;
-  }
-  function plantBed(bed, cropId){
-    const c = CROPS[cropId];
-    bed.crop = cropId;
-    bed.patches = [];
+  function plantBed(bed,cropId,seeded){
+    const c=CROPS[cropId]; bed.crop=cropId;
+    let plantedAt=NOW;
+    if(seeded){ const daysAgo=Math.floor(rng(bed.houseId*13+bed.arch.charCodeAt(0)*7+bed.col*3)()*(c.cycle-4)); plantedAt=NOW-daysAgo*DAY; }
+    bed.plantedAt=plantedAt; bed.harvestAt=plantedAt+c.cycle*DAY; bed.patches=[];
     for(let i=0;i<PATCHES_PER_BED;i++){
-      const seed = bed.houseId*1000000 + bed.arch.charCodeAt(0)*10007 + bed.col*61 + i*7 + 3;
-      const r = rng(seed);
-      const mid = (c.phLo+c.phHi)/2;
-      const ph = +(mid + (r()-0.5)*1.6).toFixed(1);
-      const moisture = Math.round(46 + r()*38);       // %
-      const ec = +(1.2 + r()*1.3).toFixed(2);          // dS/m
-      const soilTemp = +(22 + r()*7).toFixed(1);       // °C
-      const stage = r();                               // growth 0..1
-      const hoursAgo = Math.floor(1 + r()*30);
-      // Monitored 1 x 1 m patch, spaced ~10 m apart down the bed (P1 nearest the entrance).
-      bed.patches.push({idx:i, id:bed.id+"-P"+(i+1), ph, moisture, ec, soilTemp, stage, hoursAgo, seed});
+      const seed=bed.houseId*1e6+bed.arch.charCodeAt(0)*10007+bed.col*61+i*7+3, r=rng(seed), mid=(c.phLo+c.phHi)/2;
+      bed.patches.push({idx:i, id:bed.id+"-P"+(i+1), ph:+(mid+(r()-0.5)*1.6).toFixed(1),
+        moisture:Math.round(46+r()*38), ec:+(1.2+r()*1.3).toFixed(2), soilTemp:+(22+r()*7).toFixed(1), damaged:false, seed});
     }
   }
-  function clearBed(bed){ bed.crop=null; bed.patches=[]; }
+  function clearBed(bed){ bed.crop=null; bed.plantedAt=null; bed.harvestAt=null; bed.patches=[]; }
 
-  const HOUSES = [1,2,3,4].map(hid=>({
-    id:hid,
-    name:"Greenhouse "+hid,
-    type:"Net House",
-    widthM:60, lengthM:50, arches:ARCHES,
-    beds: ARCHES.flatMap(a=>Array.from({length:BEDS_PER_ARCH},(_,i)=>makeBed(hid,a,i+1)))
+  const HOUSES=[1,2,3,4].map(hid=>({
+    id:hid, name:"Greenhouse "+hid, type:"Net House", widthM:60, lengthM:50, arches:ARCHES,
+    beds:ARCHES.flatMap(a=>Array.from({length:BEDS_PER_ARCH},(_,i)=>makeBed(hid,a,i+1))),
+    sensors:[], inspections:[], sensorSeq:0, inspSeq:0,
   }));
+  HOUSES.forEach(h=>{
+    h.sensors.push({id:"S1",c:20,r:2},{id:"S2",c:40,r:3},{id:"S3",c:7,r:1}); h.sensorSeq=3;
+    h.inspections.push({id:"I1", at:NOW-2*DAY, by:"R. Nair", area:"Arch A", status:"ok", notes:"Routine walk-through, canopy healthy."});
+  });
 
-  /* ---------- derived stats ---------- */
-  const bedsOf = h => h.beds;
-  const plantedCount = h => h.beds.filter(b=>b.crop).length;
-  const cropsInHouse = h => new Set(h.beds.filter(b=>b.crop).map(b=>b.crop)).size;
-  const avgPh = bed => bed.patches.length ? (bed.patches.reduce((s,p)=>s+p.ph,0)/bed.patches.length) : null;
+  const plantedCount=h=>h.beds.filter(b=>b.crop).length;
+  const cropsInHouse=h=>new Set(h.beds.filter(b=>b.crop).map(b=>b.crop)).size;
+  const avgPh=bed=>bed.patches.length?bed.patches.reduce((s,p)=>s+p.ph,0)/bed.patches.length:null;
+  const houseById=id=>HOUSES.find(h=>h.id===id);
+  const bedById=(h,id)=>h.beds.find(b=>b.id===id);
 
-  /* ---------- pH classification ---------- */
-  function phClass(ph, crop){
-    const c = CROPS[crop];
-    if(c && ph < c.phLo) return {label:"Acidic", color:"var(--ph-acid)", key:"acid"};
-    if(c && ph > c.phHi) return {label:"Alkaline", color:"var(--ph-alk)", key:"alk"};
-    if(!c){ if(ph<6) return {label:"Acidic",color:"var(--ph-acid)",key:"acid"}; if(ph>7.2) return {label:"Alkaline",color:"var(--ph-alk)",key:"alk"}; }
-    return {label:"Ideal", color:"var(--ph-ideal)", key:"ideal"};
-  }
-  const phColorHex = k => k==="acid"?"#C77D3A":k==="alk"?"#7B6FB0":"#4C9A5A";
-
-  /* ---------- SVG "photo" of a patch (top-down) ---------- */
-  function patchPhoto(patch, cropId, w, h){
-    const c = CROPS[cropId]; const r = rng(patch.seed+7);
-    w=w||100; h=h||100;
-    // soil tone shifts a touch with moisture (wetter = darker)
-    const wet = patch.moisture/100;
-    const soilA = mix("#8a6b45","#5f4527", wet);
-    const soilB = mix("#6f5433","#4a3620", wet);
-    const nPlants = patch.stage<0.34?3 : patch.stage<0.67?5 : 8;
-    const baseR = (patch.stage<0.34?7 : patch.stage<0.67?10 : 13);
-    let plants="";
-    for(let i=0;i<nPlants;i++){
-      const cx = 14 + r()*(w-28), cy = 14 + r()*(h-28);
-      const rad = baseR*(0.7+r()*0.6);
-      const leaf = c.color;
-      const dk = shade(leaf,-26), lt = shade(leaf,22);
-      // rosette: a few overlapping ellipses
-      let rosette="";
-      const blades = 5 + Math.floor(r()*4);
-      for(let b=0;b<blades;b++){
-        const ang = (b/blades)*Math.PI*2 + r()*0.5;
-        const ex = cx + Math.cos(ang)*rad*0.5, ey = cy + Math.sin(ang)*rad*0.5;
-        rosette += `<ellipse cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" rx="${(rad*0.62).toFixed(1)}" ry="${(rad*0.32).toFixed(1)}" fill="${b%2?leaf:dk}" transform="rotate(${(ang*57.3).toFixed(0)} ${ex.toFixed(1)} ${ey.toFixed(1)})" opacity="0.92"/>`;
-      }
-      rosette += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(rad*0.3).toFixed(1)}" fill="${lt}"/>`;
-      plants += `<g>${rosette}</g>`;
-    }
-    return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Top-down photo of patch ${patch.id}">
-      <defs><radialGradient id="s${patch.seed}" cx="45%" cy="40%" r="75%">
-        <stop offset="0%" stop-color="${soilA}"/><stop offset="100%" stop-color="${soilB}"/>
-      </radialGradient></defs>
-      <rect width="${w}" height="${h}" fill="url(#s${patch.seed})"/>
-      <g opacity="0.14">${speckles(r,w,h)}</g>
-      ${plants}
-      <rect width="${w}" height="${h}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
-    </svg>`;
-  }
-  function speckles(r,w,h){let s="";for(let i=0;i<26;i++){s+=`<circle cx="${(r()*w).toFixed(0)}" cy="${(r()*h).toFixed(0)}" r="${(r()*1.6).toFixed(1)}" fill="#2c1f12"/>`;}return s;}
+  function phClass(ph,crop){const c=CROPS[crop];
+    if(c&&ph<c.phLo) return {label:"Acidic",key:"acid"};
+    if(c&&ph>c.phHi) return {label:"Alkaline",key:"alk"};
+    return {label:"Ideal",key:"ideal"};}
+  const phColorHex=k=>k==="acid"?"#C77D3A":k==="alk"?"#7B6FB0":"#4C9A5A";
+  function hx(h){h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.substr(i,2),16));}
+  function rgb(a){return '#'+a.map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('');}
   function mix(a,b,t){const A=hx(a),B=hx(b);return rgb(A.map((v,i)=>Math.round(v+(B[i]-v)*t)));}
-  function shade(hex,amt){const A=hx(hex);return rgb(A.map(v=>Math.max(0,Math.min(255,v+amt))));}
-  function hx(h){h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.substr(i,2),16));}
-  function rgb(a){return '#'+a.map(v=>v.toString(16).padStart(2,'0')).join('');}
+  function cellColor(patch,crop,mode){
+    if(mode==="ph") return phColorHex(phClass(patch.ph,crop).key);
+    if(mode==="moist"){const t=Math.max(0,Math.min(1,(patch.moisture-40)/45)); return mix("#cfe2f0","#2f6d9e",t);}
+    return CROPS[crop].color;
+  }
 
-  /* ---------- state + navigation ---------- */
-  let state = {level:"farm", houseId:null, bedId:null};
-  const stage = document.getElementById("stage");
-  const crumb = document.getElementById("crumb");
-  const drawer = document.getElementById("drawer");
-  const scrim = document.getElementById("scrim");
-  const toastEl = document.getElementById("toast");
+  let state={level:"farm", houseId:null, tool:"plan", colorMode:"crop"};
+  const stage=document.getElementById("stage"), crumb=document.getElementById("crumb");
+  const drawer=document.getElementById("drawer"), scrim=document.getElementById("scrim"), toastEl=document.getElementById("toast");
   let toastT=null;
+  function toast(m){toastEl.textContent=m; toastEl.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove("on"),2600);}
 
-  function toast(msg){
-    toastEl.textContent=msg; toastEl.classList.add("on");
-    clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove("on"),2600);
-  }
-  const houseById = id => HOUSES.find(h=>h.id===id);
-  const bedById = (h,id)=> h.beds.find(b=>b.id===id);
-
-  function go(level, houseId, bedId){
-    state={level, houseId:houseId??state.houseId, bedId:bedId??null};
-    if(level==="farm"){state.houseId=null; state.bedId=null;}
-    render();
-  }
-
-  /* ---------- breadcrumb ---------- */
+  function render(){ renderCrumb(); if(state.level==="farm") renderFarm(); else renderHouse(); window.scrollTo({top:0}); }
   function renderCrumb(){
-    let html = `<button ${state.level==="farm"?'class="cur"':''} data-nav="farm">Farm</button>`;
-    if(state.houseId){
-      const h=houseById(state.houseId);
-      html += `<span class="sep">›</span><button ${state.level==="house"?'class="cur"':''} data-nav="house">${h.name}</button>`;
-    }
-    crumb.innerHTML = html;
-    crumb.querySelectorAll("button").forEach(b=>b.onclick=()=>{
-      closeDrawer();
-      go(b.dataset.nav==="farm"?"farm":"house", state.houseId);
-    });
+    let html=`<button ${state.level==="farm"?'class="cur"':''} data-nav="farm">Farm</button>`;
+    if(state.houseId){const h=houseById(state.houseId); html+=`<span class="sep">›</span><button class="cur" data-nav="house">${h.name}</button>`;}
+    crumb.innerHTML=html;
+    crumb.querySelectorAll("button").forEach(b=>b.onclick=()=>{closeDrawer(); if(b.dataset.nav==="farm"){state.level="farm";state.houseId=null;} render();});
   }
 
-  /* ---------- FARM VIEW ---------- */
   function renderFarm(){
-    const totalBeds = HOUSES.reduce((s,h)=>s+h.beds.length,0);
-    const totalPlanted = HOUSES.reduce((s,h)=>s+plantedCount(h),0);
-    stage.innerHTML = `
+    const totalBeds=HOUSES.reduce((s,h)=>s+h.beds.length,0), totalPlanted=HOUSES.reduce((s,h)=>s+plantedCount(h),0);
+    stage.innerHTML=`
       <div class="view">
         <div class="view-head">
           <div class="eyebrow">Farm site · company-owned land</div>
           <h2>Farm overview</h2>
-          <p class="lede">Four net-house greenhouses on a 2×2 block, ringed by date palms with a shared water reservoir. Each house is 60 × 50 m — three 20 m arches, 60 beds, 300 patches. ${totalPlanted} of ${totalBeds} beds are currently planted. Select a greenhouse to plan its beds.</p>
+          <p class="lede">Four net-house greenhouses in a 2×2 block in the desert, ringed by date palms with a shared water reservoir. ${totalPlanted} of ${totalBeds} beds planted. Select a greenhouse to open its planting grid.</p>
         </div>
         <div class="site">
-          <div class="palm-row top">${palms(9)}</div>
-          <div class="palm-row bot">${palms(9)}</div>
-          <div class="palm-col l">${palms(5)}</div>
-          <div class="palm-col r">${palms(5)}</div>
-          <div class="houses">
-            ${HOUSES.map(h=>ghouseCard(h)).join("")}
-          </div>
+          <div class="palm-edge top">${palms(16)}</div>
+          <div class="palm-edge bot">${palms(16)}</div>
+          <div class="palm-edge mid">${palms(9)}</div>
+          <div class="houses" id="houses">${HOUSES.map(ghouseCard).join("")}</div>
           <div class="tank"><span>Water reservoir</span></div>
         </div>
       </div>`;
-    stage.querySelectorAll(".ghouse").forEach(el=>{
-      el.onclick=()=>go("house", +el.dataset.h);
-    });
+    stage.querySelectorAll(".ghouse").forEach(el=>el.onclick=()=>enterHouse(el,+el.dataset.h));
   }
-  function palms(n){let s="";for(let i=0;i<n;i++)s+='<span class="palm"></span>';return s;}
+  const palms=n=>Array.from({length:n}).map(()=>'<span class="palm"></span>').join("");
   function ghouseCard(h){
-    const planted=plantedCount(h), total=h.beds.length, pct=Math.round(planted/total*100);
+    const planted=plantedCount(h), total=h.beds.length;
     return `<button class="ghouse" data-h="${h.id}" aria-label="${h.name}, ${planted} of ${total} beds planted">
-      <div class="roof"><span class="rarch"></span><span class="rarch"></span><span class="rarch"></span></div>
+      <div class="roofsat"></div>
+      <span class="tagpill">${h.name}</span>
       <div class="meta">
-        <div class="r1"><h3>${h.name}</h3><span class="dim">${h.type} · 3 arches</span></div>
-        <div class="dim tnum">${h.widthM} × ${h.lengthM} m · ${total} beds</div>
-        <div class="occ">
-          <div class="bar"><i style="width:${pct}%"></i></div>
-          <div class="stat"><span><b class="tnum">${planted}</b>/${total} beds planted</span><span><b class="tnum">${cropsInHouse(h)}</b> crops</span></div>
-        </div>
+        <div class="r1"><h3>${h.name}</h3><span class="dim tnum">${h.widthM}×${h.lengthM} m</span></div>
+        <div class="stat"><b class="tnum">${planted}</b>/${total} beds · <b class="tnum">${cropsInHouse(h)}</b> crops · <b class="tnum">${h.sensors.length}</b> sensors</div>
       </div>
     </button>`;
   }
+  function enterHouse(el,id){
+    const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+    const go=()=>{state.level="house"; state.houseId=id; state.tool="plan"; render();};
+    if(reduce) return go();
+    el.parentElement.classList.add("leaving"); el.classList.add("zoom"); setTimeout(go,360);
+  }
 
-  /* ---------- HOUSE VIEW — bed tiles grouped by arch ---------- */
   function renderHouse(){
-    const h=houseById(state.houseId);
-    const planted=plantedCount(h), total=h.beds.length;
-    const totalPatches=total*PATCHES_PER_BED;
+    const h=houseById(state.houseId), planted=plantedCount(h), total=h.beds.length;
     stage.innerHTML=`
       <div class="view">
         <div class="view-head">
-          <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches</div>
-          <h2>${h.name} — bed plan</h2>
-          <p class="lede">${total} beds across 3 arches — each a 1 × 50 m strip growing one crop, with 5 monitored 1 × 1 m patches (${totalPatches} patches in all). Tap an empty bed to assign a crop, or a planted bed to inspect its patches, pH and last photos.</p>
+          <div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches (one house)</div>
+          <h2>${h.name} — planting grid</h2>
+          <p class="lede">60 beds side by side (1 × 50 m each, one crop) with 5 monitored 1 × 1 m patches — 300 in all. Plant beds and get a harvest date, place sensors on the grid crossings, and log inspections. Hover a planted bed for its harvest date.</p>
         </div>
         <div class="house-wrap">
           <div class="plan-card">
-            <div class="plan-top">
-              <div>
-                <div class="eyebrow" style="color:var(--muted)">Planting grid</div>
-                <div style="font-size:13px;color:var(--muted);margin-top:3px">3 arches · 20 beds each · ${total} beds</div>
+            <div class="toolbar">
+              <div class="tgroup"><span class="lbl">Tool</span>
+                <div class="seg" role="tablist">${tab("plan","Plan &amp; plant")}${tab("sensor","Place sensor")}${tab("inspect","Inspect")}</div>
               </div>
-              <div class="scale-note"><span class="ruler"></span> ${planted}/${total} beds planted · beds run the 50 m length</div>
+              <div class="tgroup"><span class="lbl">Colour by</span>
+                <div class="seg">${cbtn("crop","Crop")}${cbtn("ph","pH")}${cbtn("moist","Moisture")}</div>
+              </div>
             </div>
-            ${h.arches.map(a=>archSection(h,a)).join("")}
+            ${toolHint()}
+            <div class="arch-labels" style="--pad:${PAD}px">${archLabels(h)}</div>
+            <div class="matrix-scroll">
+              <div class="matrixInner" style="width:${gridWidthPx()}px">
+                <div class="grid">${buildCells(h)}</div>
+                ${archLines()}
+                <div class="sensorLayer">${buildSensors(h)}</div>
+              </div>
+            </div>
+            <div class="axis-note">
+              <span>↕ 5 patches/bed (P1–P5) · ↔ 60 beds (3 arches × 20)</span>
+              <span>${planted}/${total} beds planted</span>
+            </div>
           </div>
-          <div class="legends">
-            ${cropLegend(h)}
-            ${phLegend()}
-          </div>
+          <div class="side">${sidePanels(h)}</div>
         </div>
       </div>`;
-    stage.querySelectorAll(".bed").forEach(el=>el.onclick=()=>openBed(el.dataset.bed));
+    wireHouse(h);
   }
-  function archSection(h, arch){
-    const beds=h.beds.filter(b=>b.arch===arch);
-    const last=arch+String(BEDS_PER_ARCH).padStart(2,"0");
-    const plantedA=beds.filter(b=>b.crop).length;
-    return `<div class="arch-sec">
-      <div class="arch-h">Arch ${arch} <span>${arch}01–${last} · ${plantedA}/${beds.length} planted</span></div>
-      <div class="bed-tiles">${beds.map(b=>bedTile(b)).join("")}</div>
-    </div>`;
+  const tab=(t,l)=>`<button role="tab" data-tool="${t}" class="${state.tool===t?'on':''}" aria-selected="${state.tool===t}">${l}</button>`;
+  const cbtn=(m,l)=>`<button data-cmode="${m}" class="${state.colorMode===m?'on':''}">${l}</button>`;
+  function toolHint(){
+    const map={
+      plan:"Click an empty bed to assign a crop (records planting + proposed harvest). Click a planted bed to review or clear it.",
+      sensor:"Click a grid crossing (○) to place a sensor. Click a sensor ✚ to view its time-series. Click a placed sensor's ○ again to remove it.",
+      inspect:"Log an inspection in the panel. Click any patch to report pest/damage — mark it ✕ and remove plants from a 1×1–2×2 section."
+    };
+    return `<p class="picker-note" style="margin:-4px 0 14px">${map[state.tool]}</p>`;
   }
-  function bedTile(b){
-    if(!b.crop){
-      return `<button class="bed empty" data-bed="${b.id}" aria-label="Bed ${b.id}, empty, click to plant">
-        <span class="id">${b.id}</span>
-        <span class="crop">Empty</span>
-        <span class="sub">Not planted</span>
-        <span class="plantbtn">＋ Pick a plant</span>
-      </button>`;
-    }
-    const c=CROPS[b.crop]; const ap=avgPh(b); const pc=phClass(ap,b.crop);
-    return `<button class="bed" data-bed="${b.id}" style="background:linear-gradient(155deg, ${hexA(c.color,.16)}, ${hexA(c.color,.30)}); border-color:${hexA(c.color,.5)}" aria-label="Bed ${b.id}, ${c.name}, average pH ${ap.toFixed(1)}">
-      <span class="id">${b.id}</span>
-      <span class="crop">${c.name}</span>
-      <span class="sub">${b.patches.length} patches · 1×1 m</span>
-      <span class="leaf" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="${c.color}"><path d="M12 21c0-6 3-10 8-11-1 7-4 10-8 11Z"/><path d="M12 21C8 20 5 16 4 9c5 1 8 5 8 12Z" opacity=".65"/></svg></span>
-      <span class="avgph" style="color:${phColorHex(pc.key)}">pH ${ap.toFixed(1)}</span>
-    </button>`;
-  }
-  function hexA(hex,a){const A=hx(hex);return `rgba(${A[0]},${A[1]},${A[2]},${a})`;}
-  function cropLegend(h){
-    const used=[...new Set(h.beds.filter(b=>b.crop).map(b=>b.crop))];
-    const chips = Object.keys(CROPS).map(k=>{
-      const on=used.includes(k);
-      return `<span class="chip" style="opacity:${on?1:.4}"><span class="sw" style="background:${CROPS[k].color}"></span>${CROPS[k].name}</span>`;
+  function archLabels(h){
+    return h.arches.map(a=>{
+      const beds=h.beds.filter(b=>b.arch===a), pl=beds.filter(b=>b.crop).length, w=BEDS_PER_ARCH*(CELL+GX);
+      return `<div class="arch-lab" style="width:${w}px">Arch ${a} <span>${pl}/${BEDS_PER_ARCH}</span>
+        ${state.tool==="plan"?`<button class="clr" data-cleararch="${a}">Clear arch</button>`:""}</div>`;
     }).join("");
-    return `<div class="legend"><h4>Crops</h4><div class="chips">${chips}<span class="chip" style="opacity:.7"><span class="sw" style="background:repeating-linear-gradient(45deg,#efeadd 0 4px,#e8e2d3 4px 8px)"></span>Empty bed</span></div></div>`;
   }
-  function phLegend(){
-    return `<div class="legend"><h4>Soil pH status</h4><div class="chips">
-      <span class="chip"><span class="sw round" style="background:var(--ph-acid)"></span>Acidic — below crop range</span>
-      <span class="chip"><span class="sw round" style="background:var(--ph-ideal)"></span>Ideal — within range</span>
-      <span class="chip"><span class="sw round" style="background:var(--ph-alk)"></span>Alkaline — above range</span>
-    </div></div>`;
+  const gridWidthPx=()=>PAD*2+COLS*CELL+(COLS-1)*GX;
+  const colX=c=>PAD+c*(CELL+GX)-GX/2;
+  const rowY=r=>PAD+r*(CELL+GY)-GY/2;
+  function archLines(){ return [BEDS_PER_ARCH,BEDS_PER_ARCH*2].map(c=>`<div class="archline" style="left:${colX(c)}px"></div>`).join(""); }
+  function buildCells(h){
+    let s="";
+    h.beds.forEach(b=>{
+      for(let r=0;r<PATCHES_PER_BED;r++){
+        const p=b.crop?b.patches[r]:null;
+        const clickable=(state.tool==="plan")||(state.tool==="inspect"&&p);
+        let cls="cell"+(clickable?" clickable":""), style="", title="Bed "+b.id;
+        if(!p){ cls+=" empty"; title="Bed "+b.id+" · empty"; }
+        else if(p.damaged){ cls+=" dmg"; title=p.id+" · removed (pest/damage)"; }
+        else { style=`background:${cellColor(p,b.crop,state.colorMode)}`;
+          title=`${b.id} · ${CROPS[b.crop].name} · pH ${p.ph.toFixed(1)} · harvest ~${fmtShort(b.harvestAt)}`; }
+        s+=`<div class="${cls}" data-bed="${b.id}" data-p="${r}" style="${style}" title="${title}"></div>`;
+      }
+    });
+    return s;
+  }
+  function buildSensors(h){
+    let s="";
+    if(state.tool==="sensor"){
+      for(let c=0;c<=COLS;c++) for(let r=0;r<=PATCHES_PER_BED;r++)
+        s+=`<div class="hotspot" data-c="${c}" data-r="${r}" style="left:${colX(c)}px;top:${rowY(r)}px" title="Place sensor here"></div>`;
+    }
+    h.sensors.forEach(sn=>{
+      s+=`<div class="sensor" data-sensor="${sn.id}" style="left:${colX(sn.c)}px;top:${rowY(sn.r)}px" title="Sensor ${sn.id} — view readings" tabindex="0" role="button" aria-label="Sensor ${sn.id}">
+        <svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 1v20M1 11h20" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M11 2v18M2 11h18" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></div>`;
+    });
+    return s;
+  }
+  function sidePanels(h){
+    if(state.tool==="sensor") return sensorPanel(h)+cropLegend(h);
+    if(state.tool==="inspect") return inspectPanel(h)+legendForColor();
+    return cropLegend(h)+legendForColor();
+  }
+  function legendForColor(){
+    if(state.colorMode==="ph") return `<div class="panel"><h4>Soil pH</h4><div class="chips">
+      <span class="chip"><span class="sw round" style="background:var(--ph-acid)"></span>Acidic</span>
+      <span class="chip"><span class="sw round" style="background:var(--ph-ideal)"></span>Ideal</span>
+      <span class="chip"><span class="sw round" style="background:var(--ph-alk)"></span>Alkaline</span></div></div>`;
+    if(state.colorMode==="moist") return `<div class="panel"><h4>Soil moisture</h4><div class="chips">
+      <span class="chip"><span class="sw" style="width:70px;background:linear-gradient(90deg,#cfe2f0,#2f6d9e)"></span></span>
+      <span class="chip" style="color:var(--muted)">Dry → Wet</span></div></div>`;
+    return "";
+  }
+  function cropLegend(h){
+    const used=new Set(h.beds.filter(b=>b.crop).map(b=>b.crop));
+    return `<div class="panel"><h4>Crops</h4><div class="chips">
+      ${CROP_IDS.map(k=>`<span class="chip" style="opacity:${used.has(k)?1:.42}"><span class="sw" style="background:${CROPS[k].color}"></span>${CROPS[k].name}</span>`).join("")}
+      <span class="chip" style="opacity:.7"><span class="sw" style="background:repeating-linear-gradient(45deg,#eee7d7 0 4px,#e0d8c6 4px 8px)"></span>Empty</span>
+      <span class="chip" style="opacity:.85"><span class="sw" style="background:#f2ddd6;border-color:var(--danger)"></span>Removed ✕</span></div></div>`;
+  }
+  function sensorPanel(h){
+    const rows=h.sensors.map(sn=>`<div class="sensor-item"><span>✚ ${sn.id} <span style="color:var(--muted)">· crossing ${sn.c},${sn.r}</span></span><button data-viewsensor="${sn.id}">View data</button></div>`).join("")
+      || `<div class="empty-note">No sensors yet — click a grid crossing to place one.</div>`;
+    return `<div class="panel"><h4>Sensors <span class="tnum" style="color:var(--muted);font-weight:600">${h.sensors.length}</span></h4>${rows}</div>`;
+  }
+  function inspectPanel(h){
+    const rows=h.inspections.slice().reverse().map(ins=>`<tr>
+      <td class="tnum">${fmtShort(ins.at)}</td><td>${ins.area}</td>
+      <td><span class="stat-pill ${ins.status==='ok'?'stat-ok':ins.status==='pest'?'stat-pest':'stat-dmg'}">${ins.status.toUpperCase()}</span></td>
+      <td>${ins.notes||""}</td></tr>`).join("")
+      || `<tr><td colspan="4" class="empty-note">No inspections logged yet.</td></tr>`;
+    return `<div class="panel"><h4>Inspections <button class="mini-btn" id="logInsp">＋ Log</button></h4>
+      <table class="log"><thead><tr><th>Date</th><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   }
 
-  /* ---------- DRAWER: bed (picker or patch grid) ---------- */
+  function wireHouse(h){
+    stage.querySelectorAll(".seg [data-tool]").forEach(b=>b.onclick=()=>{state.tool=b.dataset.tool; renderHouse();});
+    stage.querySelectorAll(".seg [data-cmode]").forEach(b=>b.onclick=()=>{state.colorMode=b.dataset.cmode; renderHouse();});
+    stage.querySelectorAll("[data-cleararch]").forEach(b=>b.onclick=()=>clearArch(h,b.dataset.cleararch));
+    stage.querySelectorAll(".cell.clickable").forEach(el=>el.onclick=()=>{
+      const b=bedById(h,el.dataset.bed), r=+el.dataset.p;
+      if(state.tool==="plan") openBed(h,b); else if(state.tool==="inspect") openDamage(h,b,r);
+    });
+    stage.querySelectorAll(".hotspot").forEach(el=>el.onclick=()=>toggleSensor(h,+el.dataset.c,+el.dataset.r));
+    stage.querySelectorAll(".sensor").forEach(el=>{el.onclick=()=>openSensor(h,el.dataset.sensor);
+      el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault(); openSensor(h,el.dataset.sensor);}};});
+    stage.querySelectorAll("[data-viewsensor]").forEach(b=>b.onclick=()=>openSensor(h,b.dataset.viewsensor));
+    const li=document.getElementById("logInsp"); if(li) li.onclick=()=>openInspection(h);
+  }
+  function clearArch(h,arch){
+    const beds=h.beds.filter(b=>b.arch===arch&&b.crop);
+    if(!beds.length){toast("Arch "+arch+" is already empty"); return;}
+    beds.forEach(clearBed); toast(`Cleared ${beds.length} beds in Arch ${arch}`); renderHouse();
+  }
+  function toggleSensor(h,c,r){
+    const i=h.sensors.findIndex(s=>s.c===c&&s.r===r);
+    if(i>=0){ const id=h.sensors[i].id; h.sensors.splice(i,1); toast("Removed sensor "+id); }
+    else { const id="S"+(++h.sensorSeq); h.sensors.push({id,c,r}); toast("Placed sensor "+id); }
+    renderHouse();
+  }
+
+  function openDrawer(){drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden","false");}
+  function closeDrawer(){drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden","true");}
+  function wireClose(){drawer.querySelectorAll(".x,[data-close]").forEach(el=>el.onclick=closeDrawer);}
+  scrim.onclick=closeDrawer;
+  document.addEventListener("keydown",e=>{if(e.key==="Escape") closeDrawer();});
+
   let pickSel=null;
-  function openBed(bedId){
-    const h=houseById(state.houseId); const b=bedById(h,bedId);
-    state.bedId=bedId;
-    if(!b.crop) renderPicker(h,b); else renderPatchGrid(h,b);
-    openDrawer();
-  }
-  // Clicking a patch cell in the matrix opens its bed's grid, then the patch detail.
-  function openCell(bedId, patchIdx){
-    const h=houseById(state.houseId); const b=bedById(h,bedId);
-    state.bedId=bedId;
-    renderPatchGrid(h,b);
-    renderPatchDetail(h,b,b.patches[patchIdx]);
-    openDrawer();
-  }
+  function openBed(h,b){ if(!b.crop) renderPicker(h,b); else renderBedDetail(h,b); openDrawer(); }
   function renderPicker(h,b){
     pickSel=null;
     drawer.innerHTML=`
-      <div class="drawer-head">
-        <div><div class="id">${h.name} · Bed ${b.id}</div><h3 id="drawer-title">Pick a plant</h3></div>
-        <button class="x" aria-label="Close">✕</button>
-      </div>
+      <div class="drawer-head"><div><div class="id">${h.name} · Bed ${b.id}</div><h3 id="drawer-title">Pick a plant</h3></div><button class="x" aria-label="Close">✕</button></div>
       <div class="drawer-body">
-        <p class="picker-note">This bed is a 1 × 50 m strip. One crop is planted along it, with ${PATCHES_PER_BED} monitored 1 × 1 m patches tracked for pH and photos. Choose from the approved seasonal catalog.</p>
-        <div class="crop-grid">
-          ${Object.entries(CROPS).map(([k,c])=>`
-            <button class="crop-opt" data-crop="${k}">
-              <span class="dot" style="background:${c.color}"></span>
-              <span class="nm">${c.name}</span>
-              <span class="lat">${c.latin}</span>
-              <span class="lat" style="font-style:normal;color:var(--muted)">Ideal pH ${c.phLo}–${c.phHi}</span>
-            </button>`).join("")}
-        </div>
+        <p class="picker-note">This bed is a 1 × 50 m strip. One crop is planted along it; planting records the date and proposes a harvest date. (Patch photos are off for now.)</p>
+        <div class="crop-grid">${CROP_IDS.map(k=>{const c=CROPS[k];return `
+          <button class="crop-opt" data-crop="${k}"><span class="dot" style="background:${c.color}"></span>
+            <span class="nm">${c.name}</span><span class="lat">${c.latin}</span>
+            <span class="cyc">~${c.cycle} d cycle · pH ${c.phLo}–${c.phHi}</span></button>`;}).join("")}</div>
       </div>
-      <div class="drawer-foot">
-        <button class="btn ghost" data-close>Cancel</button>
-        <button class="btn primary" id="confirmPlant" disabled>Plant bed</button>
-      </div>`;
-    wireDrawerClose();
-    drawer.querySelectorAll(".crop-opt").forEach(el=>el.onclick=()=>{
-      pickSel=el.dataset.crop;
-      drawer.querySelectorAll(".crop-opt").forEach(x=>x.classList.toggle("sel",x===el));
-      drawer.querySelector("#confirmPlant").disabled=false;
-    });
-    drawer.querySelector("#confirmPlant").onclick=()=>{
-      if(!pickSel) return;
-      plantBed(b,pickSel);
-      toast(`Bed ${b.id} planted with ${CROPS[pickSel].name}`);
-      renderPatchGrid(h,b);
-      renderHouse(); renderCrumb();
+      <div class="drawer-foot"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="plantBtn" disabled>Plant bed</button></div>`;
+    wireClose();
+    drawer.querySelectorAll(".crop-opt").forEach(el=>el.onclick=()=>{pickSel=el.dataset.crop;
+      drawer.querySelectorAll(".crop-opt").forEach(x=>x.classList.toggle("sel",x===el)); drawer.querySelector("#plantBtn").disabled=false;});
+    drawer.querySelector("#plantBtn").onclick=()=>{ if(!pickSel)return;
+      plantBed(b,pickSel,false); const c=CROPS[pickSel];
+      toast(`Planted ${c.name} in ${b.id} · harvest ~${fmtShort(b.harvestAt)}`); renderHouse(); renderBedDetail(h,b);
     };
   }
-  function renderPatchGrid(h,b){
-    const c=CROPS[b.crop]; const ap=avgPh(b);
-    const avgMoist=Math.round(b.patches.reduce((s,p)=>s+p.moisture,0)/b.patches.length);
-    const alerts=b.patches.filter(p=>phClass(p.ph,b.crop).key!=="ideal").length;
+  function renderBedDetail(h,b){
+    const c=CROPS[b.crop], ap=avgPh(b), days=Math.round((b.harvestAt-NOW)/DAY), dmg=b.patches.filter(p=>p.damaged).length;
     drawer.innerHTML=`
-      <div class="drawer-head">
-        <div><div class="id">${h.name} · Bed ${b.id}</div>
-          <h3 id="drawer-title"><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:${c.color};margin-right:7px;vertical-align:middle"></span>${c.name}</h3></div>
-        <button class="x" aria-label="Close">✕</button>
-      </div>
-      <div class="drawer-body" id="dbody">
-        <div class="patch-summary">
-          <div class="kpi"><div class="k">Avg pH</div><div class="v" style="color:${phColorHex(phClass(ap,b.crop).key)}">${ap.toFixed(1)}</div></div>
-          <div class="kpi"><div class="k">Avg moisture</div><div class="v">${avgMoist}<small>%</small></div></div>
-          <div class="kpi"><div class="k">Patches</div><div class="v">${b.patches.length}</div></div>
-          <div class="kpi"><div class="k">pH alerts</div><div class="v" style="color:${alerts?'#C77D3A':'#4C9A5A'}">${alerts}</div></div>
+      <div class="drawer-head"><div><div class="id">${h.name} · Bed ${b.id}</div>
+        <h3 id="drawer-title"><span style="display:inline-block;width:12px;height:12px;border-radius:4px;background:${c.color};margin-right:7px;vertical-align:middle"></span>${c.name}</h3></div>
+        <button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body">
+        <div class="kpis">
+          <div class="kpi"><div class="k">Planted</div><div class="v" style="font-size:15px">${fmtDate(b.plantedAt)}</div></div>
+          <div class="kpi"><div class="k">Proposed harvest</div><div class="v" style="font-size:15px">${fmtDate(b.harvestAt)}</div></div>
+          <div class="kpi"><div class="k">${days>0?"Days to harvest":"Status"}</div><div class="v">${days>0?days:"Ready ✓"}</div></div>
         </div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:9px">Tap a patch for its last photo and live soil readings.</div>
-        <div class="patch-grid">
-          ${b.patches.map(p=>{
-            const pc=phClass(p.ph,b.crop);
-            return `<button class="patch" data-p="${p.idx}" aria-label="Patch ${p.id}, pH ${p.ph}">
-              ${patchPhoto(p,b.crop,100,100)}
-              <span class="pid">${p.id.split("-")[1]}</span>
-              <span class="ph" style="background:${phColorHex(pc.key)}">${p.ph.toFixed(1)}</span>
-            </button>`;
-          }).join("")}
+        <div class="readouts">
+          <div class="ro"><div class="k">Avg soil pH</div><div class="v" style="color:${phColorHex(phClass(ap,b.crop).key)}">${ap.toFixed(1)}</div></div>
+          <div class="ro"><div class="k">Monitored patches</div><div class="v">${b.patches.length}${dmg?` <small>(${dmg} removed)</small>`:""}</div></div>
         </div>
       </div>
-      <div class="drawer-foot">
-        <button class="btn danger" id="clearBed">Clear bed</button>
-        <button class="btn ghost" id="changeCrop">Change crop</button>
-        <button class="btn primary" data-close>Done</button>
-      </div>`;
-    wireDrawerClose();
-    drawer.querySelectorAll(".patch").forEach(el=>el.onclick=()=>renderPatchDetail(h,b,b.patches[+el.dataset.p]));
-    drawer.querySelector("#changeCrop").onclick=()=>renderPicker(h,b);
-    drawer.querySelector("#clearBed").onclick=()=>{
-      clearBed(b); toast(`Bed ${b.id} cleared`);
-      renderHouse(); renderCrumb(); closeDrawer();
+      <div class="drawer-foot"><button class="btn danger" id="clearB">Clear bed</button>
+        <button class="btn ghost" id="changeC">Change crop</button><button class="btn primary" data-close>Done</button></div>`;
+    wireClose();
+    drawer.querySelector("#changeC").onclick=()=>renderPicker(h,b);
+    drawer.querySelector("#clearB").onclick=()=>{clearBed(b); toast("Cleared bed "+b.id); renderHouse(); closeDrawer();};
+  }
+
+  function seriesPath(seed,base,amp,w,hgt){
+    const r=rng(seed), n=24; let pts=[], v=base;
+    for(let i=0;i<n;i++){ v+=(r()-0.5)*amp*0.6; v=Math.max(base-amp,Math.min(base+amp,v)); pts.push(v); }
+    const min=base-amp*1.2, max=base+amp*1.2, X=i=>8+i*((w-16)/(n-1)), Y=val=>hgt-6-((val-min)/(max-min))*(hgt-14);
+    const line=pts.map((p,i)=>`${i?"L":"M"}${X(i).toFixed(1)} ${Y(p).toFixed(1)}`).join(" ");
+    return {line, area:line+` L${X(n-1).toFixed(1)} ${hgt-6} L${X(0).toFixed(1)} ${hgt-6} Z`, last:pts[n-1]};
+  }
+  function tsChart(seed,color,label,unit,base,amp){
+    const w=440,hgt=90,s=seriesPath(seed,base,amp,w,hgt),id="g"+seed;
+    return `<div class="ts-chart"><div class="th"><span>${label}</span><b>${s.last.toFixed(unit==="pH"?1:0)} ${unit}</b></div>
+      <svg viewBox="0 0 ${w} ${hgt}" width="100%" preserveAspectRatio="none" style="height:90px" role="img" aria-label="${label} time series">
+        <defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".28"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+        <path d="${s.area}" fill="url(#${id})"/><path d="${s.line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>
+      </svg><div class="th" style="margin-top:2px"><span>−24 h</span><span>now</span></div></div>`;
+  }
+  function openSensor(h,sid){
+    const sn=h.sensors.find(s=>s.id===sid); if(!sn) return;
+    const b=h.beds[Math.min(sn.c,COLS-1)];
+    drawer.innerHTML=`
+      <div class="drawer-head"><div><div class="id">${h.name} · crossing ${sn.c},${sn.r}</div><h3 id="drawer-title">✚ Sensor ${sn.id}</h3></div><button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body">
+        <div class="influx"><span>◷</span> Sample series shown. This sensor will stream live from InfluxDB once connected.</div>
+        <div style="height:12px"></div>
+        ${tsChart(sn.c*100+sn.r+11,"#3E82B5","Soil moisture","%",62,16)}
+        ${tsChart(sn.c*100+sn.r+29,"#C77D3A","Soil pH","pH",6.6,0.6)}
+        ${tsChart(sn.c*100+sn.r+53,"#4C9A5A","Soil temperature","°C",25,4)}
+        <p class="picker-note" style="margin-top:6px">Nearest bed: <b>${b?b.id:"—"}</b>${b&&b.crop?` (${CROPS[b.crop].name})`:""}.</p>
+      </div>
+      <div class="drawer-foot"><button class="btn danger" id="rmSensor">Remove sensor</button><button class="btn primary" data-close>Done</button></div>`;
+    wireClose(); openDrawer();
+    drawer.querySelector("#rmSensor").onclick=()=>{const i=h.sensors.findIndex(s=>s.id===sid); if(i>=0)h.sensors.splice(i,1); toast("Removed "+sid); renderHouse(); closeDrawer();};
+  }
+
+  function openInspection(h){
+    drawer.innerHTML=`
+      <div class="drawer-head"><div><div class="id">${h.name}</div><h3 id="drawer-title">Log inspection</h3></div><button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body">
+        <div class="field"><label>Inspector</label><input id="insBy" value="" placeholder="Name of farm operator"></div>
+        <div class="field"><label>Area</label><input id="insArea" value="Whole house" placeholder="e.g. Arch B, beds B01–B10"></div>
+        <div class="field"><label>Status</label><select id="insStatus"><option value="ok">OK — healthy</option><option value="pest">Pest observed</option><option value="damage">Damage found</option></select></div>
+        <div class="field"><label>Notes</label><textarea id="insNotes" placeholder="Observations…"></textarea></div>
+        <p class="picker-note">To mark specific patches as damaged and remove their plants, close this and click a patch in the grid (Inspect tool).</p>
+      </div>
+      <div class="drawer-foot"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="saveInsp">Save inspection</button></div>`;
+    wireClose(); openDrawer();
+    drawer.querySelector("#saveInsp").onclick=()=>{
+      const by=drawer.querySelector("#insBy").value.trim()||"Unspecified";
+      const area=drawer.querySelector("#insArea").value.trim()||"Whole house";
+      const status=drawer.querySelector("#insStatus").value, notes=drawer.querySelector("#insNotes").value.trim();
+      h.inspections.push({id:"I"+(++h.inspSeq), at:NOW, by, area, status, notes});
+      toast("Inspection logged"); renderHouse(); closeDrawer();
     };
   }
-  function renderPatchDetail(h,b,p){
-    const c=CROPS[b.crop]; const pc=phClass(p.ph,b.crop);
-    const moistState = p.moisture<45?{t:"Low",col:"#C77D3A"}:p.moisture>78?{t:"High",col:"#3E82B5"}:{t:"Good",col:"#4C9A5A"};
-    const when = p.hoursAgo<24 ? `Today, ${String(23-p.hoursAgo%12).padStart(2,'0')}:${String((p.seed%60)).padStart(2,'0')}` : `Yesterday, ${String(6+p.hoursAgo%10).padStart(2,'0')}:${String((p.seed%60)).padStart(2,'0')}`;
-    const body=drawer.querySelector("#dbody") || drawer.querySelector(".drawer-body");
-    body.innerHTML=`
-      <button class="backlink" id="backGrid">‹ All patches in Bed ${b.id}</button>
-      <div class="pd-photo">
-        ${patchPhoto(p,b.crop,420,300)}
-        <span class="pd-cam">Fixed patch camera</span>
-        <span class="pd-stamp">${p.id} · ${when}</span>
+  let dmgSize={w:1,h:1};
+  const SIZES=[{w:1,h:1},{w:2,h:1},{w:1,h:2},{w:2,h:2},{w:3,h:1},{w:1,h:3}];
+  function openDamage(h,b,r){
+    dmgSize={w:1,h:1};
+    const startCol=h.beds.indexOf(b);
+    drawer.innerHTML=`
+      <div class="drawer-head"><div><div class="id">${h.name} · from ${b.id}-P${r+1}</div><h3 id="drawer-title">Report pest / damage</h3></div><button class="x" aria-label="Close">✕</button></div>
+      <div class="drawer-body">
+        <p class="picker-note">Mark a section around this patch as damaged (✕) and remove its planting. Choose the section size, then confirm.</p>
+        <div class="field"><label>Section size (beds × patches)</label>
+          <div class="size-grid">${SIZES.map((s,i)=>`<button class="size-opt ${i===0?'sel':''}" data-w="${s.w}" data-h="${s.h}">${s.w}×${s.h}</button>`).join("")}</div></div>
+        <div class="field"><label>Issue</label><select id="dmgStatus"><option value="pest">Pest infestation</option><option value="damage">Physical / disease damage</option></select></div>
+        <div class="field"><label>Notes</label><textarea id="dmgNotes" placeholder="What was found…"></textarea></div>
       </div>
-      <div class="readouts">
-        <div class="ro">
-          <div class="k"><span class="dotk" style="background:${phColorHex(pc.key)}"></span>Soil pH</div>
-          <div class="v" style="color:${phColorHex(pc.key)}">${p.ph.toFixed(1)}</div>
-          <div class="tag" style="background:${hexA(phColorHex(pc.key),.15)};color:${phColorHex(pc.key)}">${pc.label} · ideal ${c.phLo}–${c.phHi}</div>
-        </div>
-        <div class="ro">
-          <div class="k"><span class="dotk" style="background:${moistState.col}"></span>Moisture</div>
-          <div class="v">${p.moisture}<small>%</small></div>
-          <div class="meter"><i style="width:${p.moisture}%;background:${moistState.col}"></i></div>
-        </div>
-        <div class="ro">
-          <div class="k">EC · nutrients</div>
-          <div class="v">${p.ec.toFixed(2)}<small>dS/m</small></div>
-        </div>
-        <div class="ro">
-          <div class="k">Soil temp</div>
-          <div class="v">${p.soilTemp.toFixed(1)}<small>°C</small></div>
-        </div>
-      </div>
-      <div class="updated"><span class="pulse"></span>Live soil sensors · reading captured ${p.hoursAgo} h ago</div>`;
-    body.querySelector("#backGrid").onclick=()=>renderPatchGrid(h,b);
-    body.scrollTop=0;
+      <div class="drawer-foot"><button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="applyDmg" style="background:var(--danger)">Mark ✕ &amp; remove plants</button></div>`;
+    wireClose(); openDrawer();
+    drawer.querySelectorAll(".size-opt").forEach(el=>el.onclick=()=>{dmgSize={w:+el.dataset.w,h:+el.dataset.h};
+      drawer.querySelectorAll(".size-opt").forEach(x=>x.classList.toggle("sel",x===el));});
+    drawer.querySelector("#applyDmg").onclick=()=>{
+      let n=0;
+      for(let dc=0;dc<dmgSize.w;dc++)for(let dr=0;dr<dmgSize.h;dr++){
+        const bed=h.beds[startCol+dc], pr=r+dr;
+        if(bed&&bed.crop&&pr<PATCHES_PER_BED&&!bed.patches[pr].damaged){bed.patches[pr].damaged=true; n++;}
+      }
+      const status=drawer.querySelector("#dmgStatus").value, notes=drawer.querySelector("#dmgNotes").value.trim();
+      h.inspections.push({id:"I"+(++h.inspSeq), at:NOW, by:"Field report", area:`${b.id}-P${r+1} (${dmgSize.w}×${dmgSize.h})`, status, notes:notes||`${n} patch(es) removed`});
+      toast(`Marked ${n} patch(es) as ${status} & removed plants`); renderHouse(); closeDrawer();
+    };
   }
 
-  /* ---------- drawer open/close ---------- */
-  function openDrawer(){ drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden","false"); }
-  function closeDrawer(){ drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden","true"); state.bedId=null; }
-  function wireDrawerClose(){
-    drawer.querySelectorAll(".x,[data-close]").forEach(el=>el.onclick=closeDrawer);
-  }
-  scrim.onclick=closeDrawer;
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeDrawer(); });
-
-  /* ---------- render dispatch ---------- */
-  function render(){
-    renderCrumb();
-    if(state.level==="farm") renderFarm();
-    else if(state.level==="house") renderHouse();
-    window.scrollTo({top:0, behavior:"instant"in window?"instant":"auto"});
-  }
   render();
 })();
 </script>
