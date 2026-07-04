@@ -234,7 +234,8 @@
   const ARCHES=["A","B","C"], BEDS_PER_ARCH=20, PATCHES_PER_BED=50;
   const COLS=ARCHES.length*BEDS_PER_ARCH, ROWS=PATCHES_PER_BED;
   const CELL=11, GX=3, GY=1, PAD=10;
-  const R_M=Math.sqrt(5/Math.PI); // 5 sq m coverage radius ~1.26 m
+  const R_M=1.8;   // coverage radius (m) — circle spans 5+ patches
+  const SPREAD=5;   // once a patch reads, +/- this many patches in the same bed are assumed covered
   const PX=CELL+GX, PY=CELL+GY;
 
   function rng(seed){let x=(seed*2654435761%2147483647)||1; return ()=> (x=x*48271%2147483647)/2147483647;}
@@ -293,7 +294,13 @@
   const houseById=id=>HOUSES.find(h=>h.id===id);
   const bedById=(h,id)=>h.beds.find(b=>b.id===id);
   // sensor coverage: patch (bedIdx i, row j) center at (i+0.5, j+0.5); sensor at crossing (c,r)
-  function covered(h,i,j){ const cx=i+0.5, cy=j+0.5; return h.sensors.some(s=>Math.hypot(cx-s.c, cy-s.r)<R_M); }
+  let COV=null;
+  function sensorHits(h,i,j){ const cx=i+0.5, cy=j+0.5; return h.sensors.some(s=>Math.hypot(cx-s.c, cy-s.r)<R_M); }
+  function computeCoverage(h){ const map=new Map();
+    h.beds.forEach((b,bi)=>{ if(!b.crop) return; const direct=[]; for(let j=0;j<ROWS;j++) if(sensorHits(h,bi,j)) direct.push(j);
+      const cov=new Set(); direct.forEach(j=>{ for(let d=-SPREAD;d<=SPREAD;d++){ const r=j+d; if(r>=0&&r<ROWS) cov.add(r); } }); map.set(bi,cov); });
+    return map; }
+  function covered(h,i,j){ if(COV){ const set=COV.get(i); return !!(set&&set.has(j)); } return sensorHits(h,i,j); }
   function coveredPatchIdxs(h,bedIdx,bed){ const out=[]; for(let j=0;j<bed.patches.length;j++) if(covered(h,bedIdx,j)) out.push(j); return out; }
 
   function phClass(ph,crop){const c=CROPS[crop];
@@ -364,6 +371,7 @@
   const COLOR_MODES=[["crop","Crop"],["ph","pH"],["moist","Moisture"],["sal","Salinity"],["n","N"],["p","P"],["k","K"]];
   function renderHouse(){
     const h=houseById(state.houseId), planted=plantedCount(h), total=h.beds.length;
+    COV=computeCoverage(h);
     stage.innerHTML=`
       <div class="view">
         <div class="view-head"><div class="eyebrow">${h.type} · ${h.widthM} × ${h.lengthM} m · 3 arches (one house)</div><h2>${h.name} — planting grid</h2>
@@ -395,7 +403,7 @@
   const cbtn=(m,l)=>`<button data-cmode="${m}" class="${state.colorMode===m?'on':''}">${l}</button>`;
   function toolHint(){
     const map={plan:"Click a bed to plant it (extend to up to 5 adjacent empty beds) or open its harvest details. Hover a patch to highlight the whole bed.",
-      sensor:"Click anywhere on the grid to drop a soil sensor at the nearest patch corner — it reads a 5 m² circle around the cross. Click a sensor ✚ for its data.",
+      sensor:"Click anywhere on the grid to drop a soil sensor at the nearest patch corner — it covers 5+ patches around the cross (nearby patches in the bed are assumed covered). Click a sensor ✚ for its data.",
       inspect:"Click a patch to select it and report pest/damage — mark a section ✕ and remove its plants."};
     return `<p class="picker-note" style="margin:-4px 0 14px">${map[state.tool]}</p>`;
   }
@@ -451,7 +459,7 @@
   function cropLegend(h){ const used=new Set(h.beds.filter(b=>b.crop).map(b=>b.crop));
     return `<div class="panel"><h4>Crops</h4><div class="chips">${CROP_IDS.map(k=>`<span class="chip" style="opacity:${used.has(k)?1:.42}"><span class="sw" style="background:${CROPS[k].color}"></span>${CROPS[k].name}</span>`).join("")}<span class="chip" style="opacity:.7"><span class="sw" style="background:repeating-linear-gradient(45deg,#eee7d7 0 4px,#e0d8c6 4px 8px)"></span>Empty</span><span class="chip" style="opacity:.85"><span class="sw" style="background:#f2ddd6;border-color:var(--danger)"></span>Removed ✕</span></div></div>`; }
   function sensorPanel(h){ const rows=h.sensors.map(sn=>`<div class="sensor-item"><span>✚ ${sn.id} <span style="color:var(--muted)">· ${sn.c},${sn.r}</span></span><button data-viewsensor="${sn.id}">View</button></div>`).join()||`<div class="empty-note">No sensors yet — click the grid to place one.</div>`;
-    return `<div class="panel"><h4>Soil sensors <span class="tnum" style="color:var(--muted);font-weight:600">${h.sensors.length}</span></h4><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Each reads a 5 m² circle. Beds with no sensor show no soil data.</div>${rows}</div>`; }
+    return `<div class="panel"><h4>Soil sensors <span class="tnum" style="color:var(--muted);font-weight:600">${h.sensors.length}</span></h4><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Each covers 5+ patches; nearby patches in the same bed are assumed covered. Beds with no sensor show no soil data.</div>${rows}</div>`; }
   function inspectPanel(h){ const rows=h.inspections.slice().reverse().map(ins=>`<tr><td class="tnum">${fmtShort(ins.at)}</td><td>${ins.area}</td><td><span class="stat-pill ${ins.status==='ok'?'stat-ok':ins.status==='pest'?'stat-pest':'stat-dmg'}">${ins.status.toUpperCase()}</span></td><td>${ins.notes||""}</td></tr>`).join()||`<tr><td colspan="4" class="empty-note">No inspections yet.</td></tr>`;
     return `<div class="panel"><h4>Inspections <button class="mini-btn" id="logInsp">＋ Log</button></h4><table class="log"><thead><tr><th>Date</th><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`; }
 
@@ -592,7 +600,7 @@
   function openSensor(h,sid){ const sn=h.sensors.find(s=>s.id===sid); if(!sn) return; const d=soilReadings(h,sn), sd=sn.c*100+sn.r;
     drawer.innerHTML=`
       <div class="drawer-head"><div><div class="id">${h.name} · crossing ${sn.c},${sn.r}</div><h3 id="drawer-title">✚ Soil sensor ${sn.id}</h3></div><button class="x" aria-label="Close">✕</button></div>
-      <div class="drawer-body"><div class="influx"><span>◷</span> XZ-DSF3 LoRa soil probe · reads a 5 m² circle · sample series shown, will stream from InfluxDB once connected.</div>
+      <div class="drawer-body"><div class="influx"><span>◷</span> XZ-DSF3 LoRa soil probe · covers 5+ patches (nearby patches in the bed share the reading) · sample series shown, will stream from InfluxDB once connected.</div>
         <div class="lane-label" style="margin-bottom:8px">Current readings — all 8 soil elements</div>
         <div class="pgrid" style="margin-bottom:16px">
           <div class="ptile"><div class="k">Soil temp</div><div class="v">${d.temp}<small>°C</small></div></div><div class="ptile"><div class="k">Moisture</div><div class="v">${d.moist}<small>%</small></div></div><div class="ptile"><div class="k">pH</div><div class="v">${d.ph}</div></div><div class="ptile"><div class="k">EC</div><div class="v">${d.ec}<small>µS/cm</small></div></div><div class="ptile"><div class="k">Salinity</div><div class="v">${d.sal}<small>mg/L</small></div></div>
