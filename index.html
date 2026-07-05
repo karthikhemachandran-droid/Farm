@@ -221,6 +221,7 @@
   const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const fmtDate=ms=>{const d=new Date(ms); return d.getDate()+" "+MON[d.getMonth()]+" "+d.getFullYear();};
   const fmtShort=ms=>{const d=new Date(ms); return d.getDate()+" "+MON[d.getMonth()];};
+  const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const reduceMotion=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
 
   const CROPS={
@@ -460,7 +461,7 @@
     return `<div class="panel"><h4>Crops</h4><div class="chips">${CROP_IDS.map(k=>`<span class="chip" style="opacity:${used.has(k)?1:.42}"><span class="sw" style="background:${CROPS[k].color}"></span>${CROPS[k].name}</span>`).join("")}<span class="chip" style="opacity:.7"><span class="sw" style="background:repeating-linear-gradient(45deg,#eee7d7 0 4px,#e0d8c6 4px 8px)"></span>Empty</span><span class="chip" style="opacity:.85"><span class="sw" style="background:#f2ddd6;border-color:var(--danger)"></span>Removed ✕</span></div></div>`; }
   function sensorPanel(h){ const rows=h.sensors.map(sn=>`<div class="sensor-item"><span>✚ ${sn.id} <span style="color:var(--muted)">· ${sn.c},${sn.r}</span></span><button data-viewsensor="${sn.id}">View</button></div>`).join()||`<div class="empty-note">No sensors yet — click the grid to place one.</div>`;
     return `<div class="panel"><h4>Soil sensors <span class="tnum" style="color:var(--muted);font-weight:600">${h.sensors.length}</span></h4><div style="font-size:12px;color:var(--muted);margin-bottom:8px">Each reads a 7 m radius zone; nearby patches in the same bed are assumed covered. Beds with no sensor show no soil data.</div>${rows}</div>`; }
-  function inspectPanel(h){ const rows=h.inspections.slice().reverse().map(ins=>`<tr><td class="tnum">${fmtShort(ins.at)}</td><td>${ins.area}</td><td><span class="stat-pill ${ins.status==='ok'?'stat-ok':ins.status==='pest'?'stat-pest':'stat-dmg'}">${ins.status.toUpperCase()}</span></td><td>${ins.notes||""}</td></tr>`).join()||`<tr><td colspan="4" class="empty-note">No inspections yet.</td></tr>`;
+  function inspectPanel(h){ const rows=h.inspections.slice().reverse().map(ins=>`<tr><td class="tnum">${fmtShort(ins.at)}</td><td>${esc(ins.area)}</td><td><span class="stat-pill ${ins.status==='ok'?'stat-ok':ins.status==='pest'?'stat-pest':'stat-dmg'}">${esc(ins.status).toUpperCase()}</span></td><td>${esc(ins.notes)}</td></tr>`).join()||`<tr><td colspan="4" class="empty-note">No inspections yet.</td></tr>`;
     return `<div class="panel"><h4>Inspections <button class="mini-btn" id="logInsp">＋ Log</button></h4><table class="log"><thead><tr><th>Date</th><th>Area</th><th>Status</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`; }
 
   function wireHouse(h){
